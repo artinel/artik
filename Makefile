@@ -1,13 +1,28 @@
 include ./make.config
 include ./kernel/arch/$(ARCH)/make.config
 
+CSOURCES += $(shell find . -type d \( -path ./kernel/arch  \) -prune -o -name "*.c" -print)
+CSOURCES += $(shell find kernel/arch/$(ARCH) -type f -name "*.c")
+
+SSOURCES += $(shell find . -type d -name arch -prune -o -name "*.s" -print)
+SSOURCES += $(shell find kernel/arch/$(ARCH) -type f -name "*.s")
+
+OBJECTS = $(CSOURCES:.c=_c.o)
+OBJECTS += $(SSOURCES:.s=_s.o)
+
 LINKER = kernel/arch/$(ARCH)/linker.ld
 
-SUB_TARGETS += kernel/kernel.o
+%_c.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-all:
-	$(MAKE) -C kernel all
-	$(LD) -T $(LINKER) $(LDFLAGS) -o $(TARGET) $(SUB_TARGETS)
+%_s.o: %.s
+	$(CC) $(CFLAGS) -c $< -o $@
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	ld -T $(LINKER) $(LDFLAGS) -o $(TARGET) $(OBJECTS)
 
 clean:
-	rm $(shell find . -type f -name "*.o") $(TARGET)
+	rm $(shell find . -type f -name "*.o")
+	rm $(TARGET)
