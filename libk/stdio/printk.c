@@ -18,6 +18,10 @@ size_t printk(const char* str, ...){
 				char buffer[20];
 				itos(va_arg(args, int) , buffer, sizeof(buffer));
 				written += puts(buffer);
+			}else if(str[i+1] == 'x'){
+				char buffer[20];
+				xtos(va_arg(args, int), buffer, sizeof(buffer));
+				written += puts(buffer);
 			}
 			i++;
 		}else{

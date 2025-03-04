@@ -1,8 +1,10 @@
+#include <stdio.h>
+#include <string.h>
 #include <kernel/tty.h>
 
+#define MY_NAME "Artinel"
+#define ADDR 0xB8000
+
 void kernel_main(void){
-        tty_init();
-        tty_set_bg(VGA_COLOR_WHITE);
-        tty_set_fg(VGA_COLOR_RED);
-        tty_write("HELLO", 5);
+	printk("Hello My name is %s and i am %x years old\n", MY_NAME, ADDR);	
 }
