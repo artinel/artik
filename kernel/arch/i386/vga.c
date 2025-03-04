@@ -78,6 +78,8 @@ void vga_putchar(unsigned char c){
                         }
                 }
         }else{
+                vga_init();
+                vga_putchar(c);
                 //TODO: add error report
         }
 }
@@ -88,6 +90,8 @@ void vga_write(const char* data, size_t size){
                         vga_putchar(data[i]);
                 }
         }else{
+                vga_init();
+                vga_write(data, size);
                 //TODO: add error report
         }
 }
