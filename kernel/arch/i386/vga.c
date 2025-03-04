@@ -3,6 +3,7 @@
 #include<stdbool.h>
 
 #define VGA_BUFFER_ADDR 0xB8000
+#define VGA_TAB 8
 
 static uint16_t* vga_buffer;
 static uint8_t vga_bg = VGA_COLOR_BLACK;
@@ -68,8 +69,18 @@ inline void vga_set_fg(enum vga_color color){
 
 void vga_putchar(unsigned char c){
         if(is_vga_init){
-                vga_putentryat(c, vga_color, vga_col, vga_row);
-                if(++vga_col == VGA_WIDTH){
+                if(c == '\n'){
+                        vga_row++;
+                        vga_col = 0;
+                }else if(c == '\t'){
+                        for(int i = 0; i < VGA_TAB; i++){
+                                vga_putchar(' ');
+                        }
+                }else{
+                        vga_putentryat(c, vga_color, vga_col, vga_row);
+                        vga_col++;
+                }
+                if(vga_col >= VGA_WIDTH){
                         vga_col = 0;
                         if(++vga_row == VGA_HEIGHT){
                                 vga_scroll();
