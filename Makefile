@@ -12,6 +12,8 @@ OBJECTS += $(SSOURCES:.s=_s.o)
 
 LINKER = arch/$(ARCH)/linker.ld
 
+DOXYGEN_CONF = doc-config
+
 %_c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -26,3 +28,9 @@ $(TARGET): $(OBJECTS)
 clean:
 	rm $(shell find . -type f -name "*.o")
 	rm $(TARGET)
+
+docs:
+	doxygen doc-config
+
+clean-docs:
+	rm -rf docs
