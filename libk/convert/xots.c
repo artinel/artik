@@ -12,7 +12,7 @@ size_t xtos(int number, char* buffer, size_t size){
 
 	buffer[i] = '\0';
 
-	while(number > 0){
+	while(number > 0 && i <= size){
 		i--;
 		buffer[i] = xtoc(number%16);
 		number /= 16;
