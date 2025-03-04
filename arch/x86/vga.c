@@ -1,5 +1,5 @@
 /**
- * \file vga.c
+ * \file arch/x86/vga.c
  * \brief VGA implementation for x86 architecture
  * \author Artinel <artinel@proton.me>
  * \version 0.0.1
