@@ -11,10 +11,12 @@
 
 /**
 * Convert number(integer) to the corresponding character.
-* itoc returns the converted character.
 * Example : 0 = '0' , 1 = '1' , 2 = '2' and etc.
 *
 * \param c The integer that will be converted to character (0 >= c <= 9)
+*
+* \return itoc returns the converted character.
+*
 * \bug Does not check if the integer is between 0 and 9 (0 >= c <= 9)
 * \todo Check if the integer is between 0 and 9 (0 >= c <= 9)
 */
