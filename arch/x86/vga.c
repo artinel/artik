@@ -29,6 +29,10 @@ static bool is_vga_init = false;		/**< For stating the vga initialization */
  *
  * \param bg Background color
  * \param fg Foreground color 
+ *
+ * \return The combined value of background and foreground.\n
+ * Both background and foreground color are 4-Bits(|  BG  |  FG  |).\n
+ * The return value is uint8_t which is 8-Bits.\n
  */
 
 static inline uint8_t vga_entry_color(uint8_t bg, uint8_t fg){
@@ -40,6 +44,11 @@ static inline uint8_t vga_entry_color(uint8_t bg, uint8_t fg){
  *
  * \param c	Entry Character
  * \param color	Entry color
+ *
+ * \return The combined value of character and color.\n
+ * Both character and color are 8-Bits(|  COLOR  |  CHAR  |).\n
+ * The return value is uint16_t which is 16-Bits.\n
+ *
  * \sa vga_entry_color
  */
 
@@ -54,6 +63,7 @@ static inline uint16_t vga_entry(unsigned char c, uint8_t color){
  * \param color	Entry color
  * \param x	Entry x location (0 >= x < VGA_WIDTH)
  * \param y	Entry y location (0 >= y < VGA_HEIGHT) 
+ *
  * \sa VGA_WIDTH VGA_HEIGHT vga_entry vga_buffer
  */
 
@@ -112,6 +122,8 @@ void vga_init(void){
 /**
  * Set VGA background color.
  *
+ * \param color Background color
+ * 
  * \sa vga_color vga_bg vga_entry_color vga_bg vga_fg
  */
 
@@ -122,6 +134,8 @@ inline void vga_set_bg(enum vga_color color){
 
 /**
  * Set VGA foreground color.
+ *
+ * \param color Foreground color
  *
  * \sa vga_color vga_fg vga_color vga_entry_color vga_bg
  */
@@ -134,6 +148,7 @@ inline void vga_set_fg(enum vga_color color){
  * Print a character on the screen.
  *
  * \param c The character that will be printed on the screen
+ *
  * \sa is_vga_init vga_row vga_col VGA_TAB vga_putentryat vga_color
  * \sa VGA_WIDTH VGA_HEIGHT vga_scroll vga_delete_last_line vga_init
  */
