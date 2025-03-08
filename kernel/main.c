@@ -7,4 +7,15 @@
 * \copyright GNU Public License V3
 */
 
-void kernel_main(void){}
+#include<stdio.h>
+
+int num = 2;
+
+__attribute__ ((constructor)) void foo(void)
+{
+	printk("foo is running and printf is available at this point\n");
+}
+
+void kernel_main(void){
+	printk("Number is : %d\n", num);
+}

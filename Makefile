@@ -5,10 +5,17 @@ CSOURCES += $(shell find . -type d \( -path ./arch  \) -prune -o -name "*.c" -pr
 CSOURCES += $(shell find arch/$(ARCH) -type f -name "*.c")
 
 SSOURCES += $(shell find . -type d -name arch -prune -o -name "*.s" -print)
-SSOURCES += $(shell find arch/$(ARCH) -type f -name "*.s")
+SSOURCES += $(shell find arch/$(ARCH) -type f -not -name "crt*.s" -and -name "*.s")
 
-OBJECTS = $(CSOURCES:.c=_c.o)
+CRTI_OBJ = arch/$(ARCH)/crti_s.o
+CRTBEGIN_OBJ = $(shell $(CC) --print-file-name=crtbegin.o)
+CRTEND_OBJ = $(shell $(CC) --print-file-name=crtend.o)
+CRTN_OBJ = arch/$(ARCH)/crtn_s.o
+
+OBJECTS = $(CRTI_OBJ) $(CRTBEGIN_OBJ)
+OBJECTS += $(CSOURCES:.c=_c.o)
 OBJECTS += $(SSOURCES:.s=_s.o)
+OBJECTS += $(CRTEND_OBJ) $(CRTN_OBJ)
 
 LINKER = arch/$(ARCH)/linker.ld
 
