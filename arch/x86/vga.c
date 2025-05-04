@@ -23,10 +23,15 @@ void vga_init(){
 	}
 }
 
-void vga_putchar(unsigned char c){
-	uint8_t color = color_combine(bg_color, fg_color);
-	*vga_buffer = char_combine(c, color);
-	vga_buffer++;
+uint8_t vga_putchar(unsigned char c){
+	if(vga_is_init == true){
+		uint8_t color = color_combine(bg_color, fg_color);
+		*vga_buffer = char_combine(c, color);
+		vga_buffer++;
+		return 0;
+	}else{
+		return 1;
+	}
 }
 
 uint8_t vga_set_bg(uint8_t color){
