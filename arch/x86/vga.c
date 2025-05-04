@@ -9,7 +9,7 @@
 static inline uint8_t color_combine(uint8_t bg, uint8_t fg);
 static inline uint16_t char_combine(unsigned char c, uint8_t color);
 static inline bool color_validate(uint8_t color);
-static uint8_t vga_print(uint8_t color, uint8_t type);
+static uint8_t vga_paint(uint8_t color, uint8_t type);
 
 static uint16_t* vga_buffer;
 static bool vga_is_init = false;
