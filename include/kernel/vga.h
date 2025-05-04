@@ -23,6 +23,8 @@ enum vga_color{
 };
 
 void vga_init();
-void vga_putchar(unsigned char c, uint8_t bg, uint8_t fg);
+void vga_putchar(unsigned char c);
+uint8_t vga_set_bg(uint8_t color);
+uint8_t vga_set_fg(uint8_t color);
 
 #endif
