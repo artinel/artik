@@ -20,6 +20,7 @@ static inline uint16_t char_combine(unsigned char c, uint8_t color){
 void vga_init(){
 	if(vga_is_init == false){
 		vga_buffer = (uint16_t*)VGA_BUFFER_ADDR;
+		vga_is_init = true;
 	}
 }
 
