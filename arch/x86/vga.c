@@ -67,7 +67,7 @@ uint8_t vga_set_fg(uint8_t color){
 	}
 }
 
-uint8_t vga_paint_bg(uint8_t color){
+static uint8_t vga_paint(uint8_t color, uint8_t type){
 	if(color_validate(color) == true){
 		uint8_t col = 0;
 		uint8_t row = 0;
@@ -76,7 +76,11 @@ uint8_t vga_paint_bg(uint8_t color){
 		
 		vga_col = 0;
 		vga_row = 0;
-		bg_color = color;
+		if(type == 0){
+			bg_color = color;
+		}else{
+			fg_color = color;
+		}
 
 		while(row != VGA_MAX_ROW){
 			vga_putchar(vga_buffer[row * VGA_MAX_COL + col]);
@@ -93,4 +97,12 @@ uint8_t vga_paint_bg(uint8_t color){
 	}
 
 	return 1;
+}
+
+uint8_t vga_paint_bg(uint8_t color){
+	return vga_paint(color, 0);
+}
+
+uint8_t vga_paint_fg(uint8_t color){
+	return vga_paint(color, 1);
 }
