@@ -3,11 +3,15 @@
 #include <stdbool.h>
 
 #define VGA_BUFFER_ADDR 0xB8000
+#define VGA_MAX_ROW 25
+#define VGA_MAX_COL 80
 
 static uint16_t* vga_buffer;
 static bool vga_is_init = false;
 static uint8_t bg_color = VGA_COLOR_BLACK;
 static uint8_t fg_color = VGA_COLOR_WHITE;
+static uint8_t vga_row = 0;
+static uint8_t vga_col = 0;
 
 static inline uint8_t color_combine(uint8_t bg, uint8_t fg){
 	return (uint8_t) fg | (uint8_t) bg << 4;
@@ -27,8 +31,14 @@ void vga_init(){
 uint8_t vga_putchar(unsigned char c){
 	if(vga_is_init == true){
 		uint8_t color = color_combine(bg_color, fg_color);
-		*vga_buffer = char_combine(c, color);
-		vga_buffer++;
+		vga_buffer[vga_row * VGA_MAX_COL + vga_col] = char_combine(c, color);
+		vga_col++;
+
+		if(vga_col == VGA_MAX_COL - 1){
+			vga_col = 0;
+			vga_row++;
+		}
+
 		return 0;
 	}else{
 		return 1;
