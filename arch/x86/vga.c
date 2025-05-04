@@ -6,6 +6,11 @@
 #define VGA_MAX_ROW 25
 #define VGA_MAX_COL 80
 
+static inline uint8_t color_combine(uint8_t bg, uint8_t fg);
+static inline uint16_t char_combine(unsigned char c, uint8_t color);
+static inline bool color_validate(uint8_t color);
+static uint8_t vga_print(uint8_t color, uint8_t type);
+
 static uint16_t* vga_buffer;
 static bool vga_is_init = false;
 static uint8_t bg_color = VGA_COLOR_BLACK;
@@ -24,6 +29,40 @@ static inline uint16_t char_combine(unsigned char c, uint8_t color){
 static inline bool color_validate(uint8_t color){
 	return (color >= VGA_COLOR_BLACK && color <= VGA_COLOR_WHITE) ? true : false;
 }
+
+static uint8_t vga_paint(uint8_t color, uint8_t type){
+	if(color_validate(color) == true){
+		uint8_t col = 0;
+		uint8_t row = 0;
+		uint8_t tmp_col = vga_col;
+		uint8_t tmp_row = vga_row;
+		
+		vga_col = 0;
+		vga_row = 0;
+		if(type == 0){
+			bg_color = color;
+		}else{
+			fg_color = color;
+		}
+
+		while(row != VGA_MAX_ROW){
+			vga_putchar(vga_buffer[row * VGA_MAX_COL + col]);
+			col++;
+			if(col == VGA_MAX_COL - 1){
+				col = 0;
+				row++;
+			}
+		}
+
+		vga_col = tmp_col;
+		vga_row = tmp_row;
+		return 0;
+	}
+
+	return 1;
+}
+
+
 
 void vga_init(){
 	if(vga_is_init == false){
@@ -65,38 +104,6 @@ uint8_t vga_set_fg(uint8_t color){
 	}else{
 		return 1;
 	}
-}
-
-static uint8_t vga_paint(uint8_t color, uint8_t type){
-	if(color_validate(color) == true){
-		uint8_t col = 0;
-		uint8_t row = 0;
-		uint8_t tmp_col = vga_col;
-		uint8_t tmp_row = vga_row;
-		
-		vga_col = 0;
-		vga_row = 0;
-		if(type == 0){
-			bg_color = color;
-		}else{
-			fg_color = color;
-		}
-
-		while(row != VGA_MAX_ROW){
-			vga_putchar(vga_buffer[row * VGA_MAX_COL + col]);
-			col++;
-			if(col == VGA_MAX_COL - 1){
-				col = 0;
-				row++;
-			}
-		}
-
-		vga_col = tmp_col;
-		vga_row = tmp_row;
-		return 0;
-	}
-
-	return 1;
 }
 
 uint8_t vga_paint_bg(uint8_t color){
