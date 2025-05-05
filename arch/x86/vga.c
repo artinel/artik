@@ -45,13 +45,18 @@ static uint8_t vga_paint(uint8_t color, uint8_t type){
 			fg_color = color;
 		}
 
-		while(row != VGA_MAX_ROW){
+		while(row < VGA_MAX_ROW){
 			vga_putchar(vga_buffer[row * VGA_MAX_COL + col]);
 			col++;
 			if(col == VGA_MAX_COL - 1){
 				col = 0;
 				row++;
 			}
+		}
+
+		//TODO this is a temporary workaround for the last column not being painted
+		for(uint8_t i = 0; i < VGA_MAX_ROW; i++){
+			vga_putchar_at(vga_buffer[i * VGA_MAX_COL + 79], i, 79);
 		}
 
 		vga_col = tmp_col;
@@ -112,4 +117,14 @@ uint8_t vga_paint_bg(uint8_t color){
 
 uint8_t vga_paint_fg(uint8_t color){
 	return vga_paint(color, 1);
+}
+
+uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col){
+	if((row >= 0 && row < VGA_MAX_ROW) && (col >= 0 && col < VGA_MAX_COL)){
+		vga_col = col;
+		vga_row = row;
+		return vga_putchar(c);
+	}
+
+	return 1;
 }

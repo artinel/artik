@@ -28,5 +28,6 @@ uint8_t vga_set_bg(uint8_t color);
 uint8_t vga_set_fg(uint8_t color);
 uint8_t vga_paint_bg(uint8_t color);
 uint8_t vga_paint_fg(uint8_t color);
+uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col);
 
 #endif
