@@ -48,7 +48,7 @@ static uint8_t vga_paint(uint8_t color, uint8_t type){
 
 		while(row < VGA_MAX_ROW){
 			col++;
-			vga_putchar_at(vga_buffer[row * VGA_MAX_COL + col], row, col);
+			vga_putchar(vga_buffer[row * VGA_MAX_COL + col]);
 			if(col == VGA_MAX_COL - 1){
 				col = -1;
 				row++;
