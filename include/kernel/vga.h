@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#define VGA_MAX_ROW 25
+#define VGA_MAX_COL 80
+#define VGA_TAB_SIZE 8
+
 enum vga_color{
 	VGA_COLOR_BLACK,
 	VGA_COLOR_BLUE,
