@@ -3,9 +3,6 @@
 #include <stdbool.h>
 
 #define VGA_BUFFER_ADDR 0xB8000
-#define VGA_MAX_ROW 25
-#define VGA_MAX_COL 80
-#define VGA_TAB_SIZE 8
 
 static inline uint8_t color_combine(uint8_t bg, uint8_t fg);
 static inline uint16_t char_combine(unsigned char c, uint8_t color);
@@ -129,7 +126,7 @@ uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col){
 		uint8_t tmp_col = vga_col;
 		uint8_t tmp_row = vga_row;
 
-		vga_col = col;
+		vga_col = col - 1;
 		vga_row = row;
 		uint8_t res = vga_putchar(c);
 
@@ -139,5 +136,26 @@ uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col){
 		return res;
 	}
 
+	return 1;
+}
+
+uint8_t vga_draw_rect(uint8_t width, uint8_t height, uint8_t col, uint8_t row){
+	if((width >= 1 && width <= VGA_MAX_COL && height >= 1 && height <= VGA_MAX_ROW) && 
+			(row < VGA_MAX_ROW && col < VGA_MAX_COL)){
+		if(width <= (VGA_MAX_COL - col) && height <= (VGA_MAX_ROW - row)){
+			uint8_t tmp_col = col;
+			for(uint8_t h = 0; h < height; h++){
+				for(uint8_t w = 0; w < width; w++){
+					vga_putchar_at(' ', row, col);
+					col++;
+				}
+				col = tmp_col;
+				row++;
+			}
+
+		}else{
+			return 1;
+		}	
+	}
 	return 1;
 }
