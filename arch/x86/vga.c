@@ -62,12 +62,12 @@ static uint8_t vga_paint(uint8_t color, uint8_t type){
 }
 
 static void vga_scroll(){
-	for(uint8_t r = 1; r < VGA_MAX_ROW; r++){
+	for(uint8_t r = 1; r < VGA_MAX_ROW + 1; r++){
 		for(uint8_t c = 0; c < VGA_MAX_COL; c++){
 			vga_putchar_at(vga_buffer[r * VGA_MAX_COL + c], r - 1, c);
 		}
 	}
-	vga_row = VGA_MAX_ROW - 2;
+	vga_row = VGA_MAX_ROW - 1;
 	vga_col = -1;
 }
 
@@ -81,7 +81,7 @@ void vga_init(){
 uint8_t vga_putchar(unsigned char c){
 	if(vga_is_init == true){
 		
-		if(vga_row == VGA_MAX_ROW - 1){
+		if(vga_row == VGA_MAX_ROW){
 			vga_scroll();
 		}
 	
