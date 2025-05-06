@@ -5,6 +5,7 @@
 #define VGA_BUFFER_ADDR 0xB8000
 #define VGA_MAX_ROW 25
 #define VGA_MAX_COL 80
+#define VGA_TAB_SIZE 8
 
 static inline uint8_t color_combine(uint8_t bg, uint8_t fg);
 static inline uint16_t char_combine(unsigned char c, uint8_t color);
@@ -73,9 +74,18 @@ void vga_init(){
 
 uint8_t vga_putchar(unsigned char c){
 	if(vga_is_init == true){
-		vga_col++;
-		uint8_t color = color_combine(bg_color, fg_color);
-		vga_buffer[vga_row * VGA_MAX_COL + vga_col] = char_combine(c, color);
+		if(c == '\n'){
+			vga_col = -1;
+			vga_row++;
+		}else if(c == '\t'){
+			for(uint8_t i = 0; i < VGA_TAB_SIZE; i++){
+				vga_putchar(' ');
+			}
+		}else{
+			vga_col++;
+			uint8_t color = color_combine(bg_color, fg_color);
+			vga_buffer[vga_row * VGA_MAX_COL + vga_col] = char_combine(c, color);
+		}
 
 		if(vga_col == VGA_MAX_COL - 1){
 			vga_col = -1;
