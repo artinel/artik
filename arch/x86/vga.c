@@ -32,7 +32,7 @@ static inline bool color_validate(uint8_t color){
 
 static uint8_t vga_paint(uint8_t color, uint8_t type){
 	if(color_validate(color) == true){
-		uint8_t col = 0;
+		uint8_t col = -1;
 		uint8_t row = 0;
 		uint8_t tmp_col = vga_col;
 		uint8_t tmp_row = vga_row;
@@ -46,17 +46,12 @@ static uint8_t vga_paint(uint8_t color, uint8_t type){
 		}
 
 		while(row < VGA_MAX_ROW){
-			vga_putchar(vga_buffer[row * VGA_MAX_COL + col]);
 			col++;
+			vga_putchar_at(vga_buffer[row * VGA_MAX_COL + col], row, col);
 			if(col == VGA_MAX_COL - 1){
-				col = 0;
+				col = -1;
 				row++;
 			}
-		}
-
-		//TODO this is a temporary workaround for the last column not being painted
-		for(uint8_t i = 0; i < VGA_MAX_ROW; i++){
-			vga_putchar_at(vga_buffer[i * VGA_MAX_COL + 79], i, 79);
 		}
 
 		vga_col = tmp_col;
