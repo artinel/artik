@@ -8,6 +8,7 @@ static inline uint8_t color_combine(uint8_t bg, uint8_t fg);
 static inline uint16_t char_combine(unsigned char c, uint8_t color);
 static inline bool color_validate(uint8_t color);
 static uint8_t vga_paint(uint8_t color, uint8_t type);
+static void vga_scroll();
 
 static uint16_t* vga_buffer;
 static bool vga_is_init = false;
@@ -60,7 +61,15 @@ static uint8_t vga_paint(uint8_t color, uint8_t type){
 	return 1;
 }
 
-
+static void vga_scroll(){
+	for(uint8_t r = 1; r < VGA_MAX_ROW; r++){
+		for(uint8_t c = 0; c < VGA_MAX_COL; c++){
+			vga_putchar_at(vga_buffer[r * VGA_MAX_COL + c], r - 1, c);
+		}
+	}
+	vga_row = VGA_MAX_ROW - 2;
+	vga_col = -1;
+}
 
 void vga_init(){
 	if(vga_is_init == false){
@@ -71,6 +80,11 @@ void vga_init(){
 
 uint8_t vga_putchar(unsigned char c){
 	if(vga_is_init == true){
+		
+		if(vga_row == VGA_MAX_ROW - 1){
+			vga_scroll();
+		}
+	
 		if(c == '\n'){
 			vga_col = -1;
 			vga_row++;
@@ -87,7 +101,7 @@ uint8_t vga_putchar(unsigned char c){
 		if(vga_col == VGA_MAX_COL - 1){
 			vga_col = -1;
 			vga_row++;
-		}
+		}		
 
 		return 0;
 	}else{
