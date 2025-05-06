@@ -28,7 +28,7 @@ static inline uint16_t char_combine(unsigned char c, uint8_t color){
 }
 
 static inline bool color_validate(uint8_t color){
-	return (color >= VGA_COLOR_BLACK && color <= VGA_COLOR_WHITE) ? true : false;
+	return (color <= VGA_COLOR_WHITE) ? true : false;
 }
 
 static uint8_t vga_paint(uint8_t color, uint8_t type){
@@ -125,7 +125,7 @@ uint8_t vga_paint_fg(uint8_t color){
 }
 
 uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col){
-	if((row >= 0 && row < VGA_MAX_ROW) && (col >= 0 && col < VGA_MAX_COL)){
+	if((row < VGA_MAX_ROW) && (col < VGA_MAX_COL)){
 		uint8_t tmp_col = vga_col;
 		uint8_t tmp_row = vga_row;
 
