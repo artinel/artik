@@ -116,9 +116,17 @@ uint8_t vga_paint_fg(uint8_t color){
 
 uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col){
 	if((row >= 0 && row < VGA_MAX_ROW) && (col >= 0 && col < VGA_MAX_COL)){
+		uint8_t tmp_col = vga_col;
+		uint8_t tmp_row = vga_row;
+
 		vga_col = col;
 		vga_row = row;
-		return vga_putchar(c);
+		uint8_t res = vga_putchar(c);
+
+		vga_col = tmp_col;
+		vga_row = tmp_row;
+
+		return res;
 	}
 
 	return 1;
