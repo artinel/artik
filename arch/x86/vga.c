@@ -173,3 +173,14 @@ uint8_t vga_draw_rect(uint8_t width, uint8_t height, uint8_t col, uint8_t row){
 	}
 	return 1;
 }
+
+void vga_clear(){
+	for(uint8_t r = 0; r < VGA_MAX_ROW; r++){
+		for(uint8_t c = 0; c < VGA_MAX_COL; c++){
+			vga_putchar_at('\0', r, c);
+		}
+	}
+
+	vga_col = -1;
+	vga_row = 0;
+}
