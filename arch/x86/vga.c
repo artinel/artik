@@ -1,6 +1,7 @@
 #include <kernel/vga.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "cursor.h"
 
 #define VGA_BUFFER_ADDR 0xB8000
 
@@ -75,6 +76,9 @@ void vga_init(){
 	if(vga_is_init == false){
 		vga_buffer = (uint16_t*)VGA_BUFFER_ADDR;
 		vga_is_init = true;
+
+		/* Make the cursor fill the entire character area */
+		enable_cursor(0, 15);
 	}
 }
 

@@ -1,0 +1,9 @@
+#ifndef __X86_VGA_REGS_H
+#define __X86_VGA_REGS_H
+
+#define VGA_COLOR_PLANE_REG	0x0A
+#define VGA_MODE_CTRL_REG	0x0B
+#define VGA_CGA_REG		0xC0
+#define VGA_EXT_COLOR_REG	0xE0
+
+#endif
