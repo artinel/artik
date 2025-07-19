@@ -24,7 +24,7 @@ void kernel_main(void){
 	int col = (VGA_MAX_COL / 2) - (len / 2);
 	int row = VGA_MAX_ROW / 2;
 
-	for (int i = 0; i < len; i++) {
+	for (uint32_t i = 0; i < len; i++) {
 		vga_putchar_at(hello[i], row, col++);
 	}
 }

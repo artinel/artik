@@ -26,6 +26,11 @@ enum vga_color{
 	VGA_COLOR_WHITE,
 };
 
+enum vga_paint_type {
+	VGA_PAINT_BG,
+	VGA_PAINT_FG
+};
+
 void vga_init();
 uint8_t vga_putchar(unsigned char c);
 uint8_t vga_set_bg(uint8_t color);
@@ -33,7 +38,6 @@ uint8_t vga_set_fg(uint8_t color);
 uint8_t vga_paint_bg(uint8_t color);
 uint8_t vga_paint_fg(uint8_t color);
 uint8_t vga_putchar_at(unsigned char c, uint8_t row, uint8_t col);
-uint8_t vga_draw_rect(uint8_t width, uint8_t height, uint8_t col, uint8_t row);
 void vga_clear();
 
 #endif
