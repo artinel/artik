@@ -108,6 +108,7 @@ uint8_t vga_putchar(unsigned char c){
 			vga.col++;
 			uint8_t color = color_combine(vga.bg, vga.fg);
 			vga.buffer[vga.row * VGA_MAX_COL + vga.col] = char_combine(c, color);
+			update_cursor(vga.row, vga.col + 1);
 		}
 
 		if(vga.col == VGA_MAX_COL - 1){
