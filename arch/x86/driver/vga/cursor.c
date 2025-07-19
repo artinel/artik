@@ -1,6 +1,6 @@
 #include <stdint.h>
+#include <io/iox.h>
 #include "cursor.h"
-#include "iox.h"
 #include "vga_ports.h"
 #include "vga_regs.h"
 

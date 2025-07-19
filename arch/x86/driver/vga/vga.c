@@ -1,4 +1,4 @@
-#include <kernel/vga.h>
+#include <video/vga.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "cursor.h"

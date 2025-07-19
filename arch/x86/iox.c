@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "iox.h"
+#include <io/iox.h>
 
 
 void outb(uint16_t port, uint8_t value) {
