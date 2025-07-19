@@ -30,3 +30,12 @@ void disable_cursor() {
 	outb(VGA_CTRL_PORT, VGA_COLOR_PLANE);
 	outb(VGA_CTRL_WR_PORT, VGA_COLOR_PLANE_DISABLER);
 }
+
+uint16_t get_cursor_pos() {
+	uint16_t pos = 0;
+	outb(VGA_CTRL_PORT, VGA_COLOR_PLANE_ENABLER);
+	pos |= inb(VGA_CTRL_WR_PORT);
+	outb(VGA_CTRL_PORT, VGA_MEM_MODE);
+	pos |= inb((uint16_t)inb(VGA_CTRL_WR_PORT)) << 8;
+	return pos;
+}
