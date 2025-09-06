@@ -19,7 +19,5 @@ int puts(const char *str) {
 		index++;
 	}
 
-	putc('\n');
-
 	return index;
 }
