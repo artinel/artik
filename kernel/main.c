@@ -1,8 +1,11 @@
+#include <video/tty.h>
+#include <libk/stdio.h>
+
 void main(void) {
-
-	unsigned short *arr = (unsigned short *) 0xB8000;
-
-	*arr = (((0 << 4) | 5) << 8) | 'A'; 
+	tty_init();
+	
+	puts("Starting kernel...");
+	puts("Kernel is ready...");
 
 	while (1) {}
 }
