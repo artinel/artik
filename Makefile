@@ -134,9 +134,6 @@ obj/%.asm.o: %.asm Makefile
 	mkdir -p "$(dir $@)"
 	nasm $(NASMFLAGS) $< -o $@
 
-obj/%.psf.o: %.psf Makefile
-	mkdir -p src/font
-	xxd -i $< > $<.h
 
 # Remove object files and the final executable.
 .PHONY: clean
