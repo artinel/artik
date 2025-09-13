@@ -53,3 +53,10 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+tags
+*.swp
+*.lock
+*.temp
+bin/*
+obj/*
