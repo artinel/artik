@@ -14,5 +14,8 @@ struct fb_info {
 
 void init_framebuffer(struct fb_info *fb_info);
 void fb_putpixel(uint32_t color, uint16_t x, uint16_t y);
+uint16_t fb_get_width(void);
+uint16_t fb_get_height(void);
+uint32_t fb_get_pitch(void);
 
 #endif
