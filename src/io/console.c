@@ -9,8 +9,9 @@
 #define TAB_SIZE 8
 
 struct console{
-	uint32_t background;	/* character background */
-	uint32_t foreground;	/* character foreground */
+	uint32_t char_bg;	/* character background */
+	uint32_t char_fg;	/* character foreground */
+	uint32_t scr_bg;	/* screen background */
 	uint16_t width;		/* screen width */
 	uint16_t height;	/* screen height */
 	uint16_t max_col;	/* maximum number of characters in a row */
@@ -24,8 +25,9 @@ struct console{
 static struct console console;
 
 void init_console(){
-	console.background = 0x000000;	/* set background to black */
-	console.foreground = 0xFFFFFF;	/* set foreground to white */
+	console.char_bg = 0x000000;	/* set background to black */
+	console.char_fg = 0xFFFFFF;	/* set foreground to white */
+	console.scr_bg = console.char_bg;
 	console.width = fb_get_width();	/* get width from framebuffer */
 	console.height = fb_get_height();	/* get height from framebuffer */
 	console.font = (psf2_t *) default_psf; /* set the font to default */
@@ -88,7 +90,7 @@ void console_putchar(uint16_t ch) {
 	uint32_t start_x = console.x * console.font->width;
 	uint32_t start_y = console.y * console.font->height;
 
-	uint32_t color = console.background;
+	uint32_t color = console.char_bg;
 
 	for (uint32_t y = 0; y < console.font->height; y++) {
 		for (uint32_t x = 0; x < console.font->width; x++) {
@@ -101,9 +103,9 @@ void console_putchar(uint16_t ch) {
 					byte_index] & bit_mask) != 0;
 
 			if (pixel_set == 0) {
-				color = console.background;
+				color = console.char_bg;
 			} else {
-				color = console.foreground;
+				color = console.char_fg;
 			}
 
 			/* calculate framebuffer position */
@@ -143,7 +145,7 @@ static void console_scroll(void){
 	uint32_t *clear_start = fb + ((console.height - font_height) * scanline);
 
 	for (uint32_t i = 0; i < clear_size / sizeof(PIXEL); i++) {
-		clear_start[i] = console.background;
+		clear_start[i] = console.scr_bg;
 	}
 
 	console.x = 0;
@@ -154,7 +156,27 @@ void console_clear(void) {
 	uint32_t *fb = fb_get_buffer();
 	
 	for (int i = 0; i < console.width * console.height; i++) {
-		fb[i] = console.background;
+		fb[i] = console.scr_bg;
+	}
+
+	console.x = 0;
+	console.y = 0;
+}
+
+void console_set_background(uint32_t bg) {
+	console.char_bg = bg;
+}
+
+void console_set_foreground(uint32_t fg) {
+	console.char_fg = fg;
+}
+
+void console_paint_background(uint32_t bg) {
+	uint32_t *fb = fb_get_buffer();
+	console.scr_bg = bg;
+
+	for (int i = 0; i < console.width * console.height; i++) {
+		fb[i] = bg;
 	}
 
 	console.x = 0;

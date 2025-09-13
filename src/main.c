@@ -69,6 +69,9 @@ void main(void) {
 	/* Initialize the console */
 	init_console();
 
+	console_paint_background(0xFFFFFF);
+	console_set_background(0xFFFFFF);
+	console_set_foreground(0x0000FF);
 	/* Write a character on the screen */
 	for (uint16_t c = 'A'; c <= 'Z'; c++) {
 		console_putchar(c);
@@ -80,7 +83,7 @@ void main(void) {
 		console_putchar('\n');
 	}
 	
-
+	console_putchar('T');
 	/* We are done. just halt the kernel*/
 	halt();
 }
