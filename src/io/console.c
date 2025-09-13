@@ -3,6 +3,7 @@
 #include <io/framebuffer.h>
 #include <font/psf.h>
 #include <font/default.psf.h>
+#include <libk/string.h>
 
 #define PIXEL uint32_t
 #define TAB_SIZE 8
@@ -35,6 +36,8 @@ void init_console(){
 	console.scanline = fb_get_pitch() / sizeof(PIXEL);
 }
 
+static void console_scroll(void);
+
 void console_putchar(uint16_t ch) {
 	
 	/* tab support */
@@ -52,6 +55,9 @@ void console_putchar(uint16_t ch) {
 	if (ch == '\n') {
 		console.y++;
 		console.x = 0;
+		if (console.y >= console.max_row) {
+			console_scroll();
+		}
 		return;
 	}
 
@@ -113,5 +119,33 @@ void console_putchar(uint16_t ch) {
 	} else {
 		console.y++;
 		console.x = 0;
+		if (console.y >= console.max_row) {
+			console_scroll();
+		}
 	}
+}
+
+static void console_scroll(void){
+	uint32_t *fb = fb_get_buffer();
+	uint32_t scanline = console.scanline;
+	uint32_t font_height = console.font->height;
+
+	/* calculate memory regions */
+	uint32_t bytes_per_pixel = sizeof(PIXEL);
+	uint32_t scroll_size = (console.height - font_height) * scanline *
+		bytes_per_pixel;
+
+	uint32_t clear_size = font_height * scanline * bytes_per_pixel;
+
+	memmove(fb, fb + (font_height * scanline), scroll_size);
+
+	// clear the bottom area
+	uint32_t *clear_start = fb + ((console.height - font_height) * scanline);
+
+	for (uint32_t i = 0; i < clear_size / sizeof(PIXEL); i++) {
+		clear_start[i] = console.background;
+	}
+
+	console.x = 0;
+	console.y = console.max_row - 1;
 }

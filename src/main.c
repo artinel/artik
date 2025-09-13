@@ -75,6 +75,12 @@ void main(void) {
 		console_putchar('\n');
 	}
 
+	for (uint16_t c = 'A'; c <= 'Z'; c++) {
+		console_putchar(c);
+		console_putchar('\n');
+	}
+	
+
 	/* We are done. just halt the kernel*/
 	halt();
 }

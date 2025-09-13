@@ -38,3 +38,7 @@ uint16_t fb_get_height(void) {
 uint32_t fb_get_pitch(void) {
 	return pitch;
 }
+
+uint32_t *fb_get_buffer(void) {
+	return fb;
+}
