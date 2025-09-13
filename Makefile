@@ -71,7 +71,8 @@ override CFLAGS += \
     -mno-sse \
     -mno-sse2 \
     -mno-red-zone \
-    -mcmodel=kernel
+    -mcmodel=kernel \
+    -I./include
 
 # Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \

@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <limine.h>
-
+#include <io/framebuffer.h>
 
 /* Set the base limine revision to 3 (might change it later) */
 __attribute__((used, section(".limine_requests")))
@@ -53,6 +53,16 @@ void main(void) {
 
 	/* [INFO] We assume the framebuffer is RGB with 32-bit pixels*/
 
+	/* Initialize the framebuffer */
+	struct fb_info fb_info = {
+		.address = framebuffer->address,
+		.width = framebuffer->width,
+		.height = framebuffer->height,
+		.pitch = framebuffer->pitch,
+		.bpp = framebuffer->bpp
+	};
+
+	init_framebuffer(&fb_info);
 
 	/* We are done. just halt the kernel*/
 	halt();
