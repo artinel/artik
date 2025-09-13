@@ -149,3 +149,14 @@ static void console_scroll(void){
 	console.x = 0;
 	console.y = console.max_row - 1;
 }
+
+void console_clear(void) {
+	uint32_t *fb = fb_get_buffer();
+	
+	for (int i = 0; i < console.width * console.height; i++) {
+		fb[i] = console.background;
+	}
+
+	console.x = 0;
+	console.y = 0;
+}

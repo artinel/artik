@@ -5,5 +5,6 @@
 
 void init_console(void);
 void console_putchar(uint16_t ch);
+void console_clear(void);
 
 #endif
