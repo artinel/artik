@@ -4,11 +4,12 @@
 #include <stdint.h>
 
 struct fb_info {
-	void *address;
-	uint16_t width;
-	uint16_t height;
-	uint32_t pitch;
-	uint16_t bpp;
+	void *address;		/* A pointer to framebuffer */
+	uint16_t width;		/* Screen width */
+	uint16_t height;	/* Screen height */
+	uint32_t pitch;		/* How many bytes to skip in order 
+				   to go down one pixel */
+	uint16_t bpp;		/* Bytes per pixel */
 };
 
 void init_framebuffer(struct fb_info *fb_info);
