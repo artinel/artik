@@ -18,12 +18,12 @@ struct console{
 	uint16_t height;	/* screen height */
 	uint16_t max_col;	/* maximum number of characters in a row */
 	uint16_t max_row;	/* maximus number of characters in a column */
-	uint16_t x;		/* current x position */
-	uint16_t y;		/* current y position */
+	uint16_t col;		/* current col position */
+	uint16_t row;		/* current row position */
 	uint32_t scanline;	/* bytes to pixels */
 	psf2_t *font;		/* a pointer to the psf font data */
-	uint16_t cursor_x;	/* current cursor x position*/
-	uint16_t cursor_y;	/* current cursor y position */
+	uint16_t cursor_col;	/* current cursor x position*/
+	uint16_t cursor_row;	/* current cursor y position */
 };
 
 static struct console console;
@@ -42,11 +42,11 @@ void init_console(){
 	console.font = (psf2_t *) default_psf; /* set the font to default */
 	console.max_col = console.width / console.font->width;
 	console.max_row = console.height / console.font->height;
-	console.x = 0;
-	console.y = 0;
+	console.col = 0;
+	console.row = 0;
 	console.scanline = fb_get_pitch() / sizeof(PIXEL);
-	console.cursor_x = console.x;
-	console.cursor_y = console.y;
+	console.cursor_col = console.col;
+	console.cursor_row = console.row;
 
 	console_draw_cursor();
 }
@@ -59,33 +59,33 @@ void console_putchar(uint16_t ch) {
 
 	/* tab support */
 	if (ch == '\t') {
-		console.x += TAB_SIZE;
-		if (console.x > console.max_col - 1) {
-			int diff = console.x - (console.max_col - 1);
-			console.x = diff;
-			console.y++;
+		console.col += TAB_SIZE;
+		if (console.col > console.max_col - 1) {
+			int diff = console.col - (console.max_col - 1);
+			console.col = diff;
+			console.row++;
 		}
-		console_move_cursor(console.x + 1, console.y);	
+		console_move_cursor(console.col + 1, console.row);	
 
 		return;
 	}
 
 	/* newline support */
 	if (ch == '\n') {
-		console.y++;
-		console.x = 0;
-		if (console.y >= console.max_row) {
+		console.row++;
+		console.col = 0;
+		if (console.row >= console.max_row) {
 			console_scroll();
 		}
 
-		console_move_cursor(console.x, console.y);
+		console_move_cursor(console.col, console.row);
 		return;
 	}
 
 	/* carriage return support */
 	if (ch == '\r') {
-		console.x = 0;
-		console_move_cursor(console.x, console.y);
+		console.col = 0;
+		console_move_cursor(console.col, console.row);
 		return;
 	}
 
@@ -107,8 +107,8 @@ void console_putchar(uint16_t ch) {
 	glyph += ch * console.font->bytes_per_glyph;
 
 	/* calculate starting position in framebuffer*/
-	uint32_t start_x = console.x * console.font->width;
-	uint32_t start_y = console.y * console.font->height;
+	uint32_t start_x = console.col * console.font->width;
+	uint32_t start_y = console.row * console.font->height;
 
 	uint32_t color = console.char_bg;
 
@@ -136,17 +136,17 @@ void console_putchar(uint16_t ch) {
 		}
 	}
 
-	if (console.x < console.max_col - 1) {
-		console.x++;
+	if (console.col < console.max_col - 1) {
+		console.col++;
 	} else {
-		console.y++;
-		console.x = 0;
-		if (console.y >= console.max_row) {
+		console.row++;
+		console.col = 0;
+		if (console.row >= console.max_row) {
 			console_scroll();
 		}
 	}
 
-	console_move_cursor(console.x, console.y);
+	console_move_cursor(console.col, console.row);
 }
 
 static void console_scroll(void){
@@ -170,8 +170,8 @@ static void console_scroll(void){
 		clear_start[i] = console.scr_bg;
 	}
 
-	console.x = 0;
-	console.y = console.max_row - 1;
+	console.col = 0;
+	console.row = console.max_row - 1;
 }
 
 void console_clear(void) {
@@ -181,8 +181,8 @@ void console_clear(void) {
 		fb[i] = console.scr_bg;
 	}
 
-	console.x = 0;
-	console.y = 0;
+	console.col = 0;
+	console.row = 0;
 }
 
 void console_set_background(uint32_t bg) {
@@ -201,14 +201,14 @@ void console_paint_background(uint32_t bg) {
 		fb[i] = bg;
 	}
 
-	console.x = 0;
-	console.y = 0;
+	console.col = 0;
+	console.row = 0;
 }
 
 
 static void console_draw_cursor(void) {
-	uint32_t start_x = console.cursor_x * console.font->width;
-	uint32_t start_y = console.cursor_y * console.font->height;
+	uint32_t start_x = console.cursor_col * console.font->width;
+	uint32_t start_y = console.cursor_row * console.font->height;
 
 	for (uint32_t y = 0; y < console.font->height; y++) {
 		for (uint32_t x = 0; x < console.font->width; x++) {
@@ -219,8 +219,8 @@ static void console_draw_cursor(void) {
 }
 
 static void console_clear_cursor(void) {
-	uint32_t start_x = console.cursor_x * console.font->width;
-	uint32_t start_y = console.cursor_y * console.font->height;
+	uint32_t start_x = console.cursor_col * console.font->width;
+	uint32_t start_y = console.cursor_row * console.font->height;
 
 	for (uint32_t y = 0; y < console.font->height; y++) {
 		for (uint32_t x = 0; x < console.font->width; x++) {
@@ -230,8 +230,8 @@ static void console_clear_cursor(void) {
 	}
 }
 
-static void console_move_cursor(uint16_t x, uint16_t y) {
-	console.cursor_x = x;
-	console.cursor_y = y;
+static void console_move_cursor(uint16_t col, uint16_t row) {
+	console.cursor_col = col;
+	console.cursor_row = row;
 	console_draw_cursor();
 }
