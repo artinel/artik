@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <io/framebuffer.h>
 
+/* [TODO] Implement double buffering (for cursor and reading the buffer) */
+
 static uint16_t width = 0;
 static uint16_t height = 0;
 static uint32_t pitch = 0;
