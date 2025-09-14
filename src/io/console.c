@@ -5,6 +5,8 @@
 #include <font/default.psf.h>
 #include <libk/string.h>
 
+/* [TODO] Implement redrawing character at cursor position when we have malloc */
+
 #define PIXEL uint32_t
 #define TAB_SIZE 8
 
@@ -20,9 +22,16 @@ struct console{
 	uint16_t y;		/* current y position */
 	uint32_t scanline;	/* bytes to pixels */
 	psf2_t *font;		/* a pointer to the psf font data */
+	uint16_t cursor_x;	/* current cursor x position*/
+	uint16_t cursor_y;	/* current cursor y position */
 };
 
 static struct console console;
+
+static void console_draw_cursor(void);
+static void console_clear_cursor(void);
+static void console_scroll(void);
+static void console_move_cursor(uint16_t x, uint16_t y);
 
 void init_console(){
 	console.char_bg = 0x000000;	/* set background to black */
@@ -36,12 +45,18 @@ void init_console(){
 	console.x = 0;
 	console.y = 0;
 	console.scanline = fb_get_pitch() / sizeof(PIXEL);
+	console.cursor_x = console.x;
+	console.cursor_y = console.y;
+
+	console_draw_cursor();
 }
 
-static void console_scroll(void);
 
 void console_putchar(uint16_t ch) {
 	
+	/* clear the last position of cursor */
+	console_clear_cursor();
+
 	/* tab support */
 	if (ch == '\t') {
 		console.x += TAB_SIZE;
@@ -50,6 +65,8 @@ void console_putchar(uint16_t ch) {
 			console.x = diff;
 			console.y++;
 		}
+		console_move_cursor(console.x + 1, console.y);	
+
 		return;
 	}
 
@@ -60,12 +77,15 @@ void console_putchar(uint16_t ch) {
 		if (console.y >= console.max_row) {
 			console_scroll();
 		}
+
+		console_move_cursor(console.x, console.y);
 		return;
 	}
 
 	/* carriage return support */
 	if (ch == '\r') {
 		console.x = 0;
+		console_move_cursor(console.x, console.y);
 		return;
 	}
 
@@ -125,6 +145,8 @@ void console_putchar(uint16_t ch) {
 			console_scroll();
 		}
 	}
+
+	console_move_cursor(console.x, console.y);
 }
 
 static void console_scroll(void){
@@ -181,4 +203,35 @@ void console_paint_background(uint32_t bg) {
 
 	console.x = 0;
 	console.y = 0;
+}
+
+
+static void console_draw_cursor(void) {
+	uint32_t start_x = console.cursor_x * console.font->width;
+	uint32_t start_y = console.cursor_y * console.font->height;
+
+	for (uint32_t y = 0; y < console.font->height; y++) {
+		for (uint32_t x = 0; x < console.font->width; x++) {
+			fb_putpixel(console.char_fg, x + start_x, 
+					y + start_y);	
+		}
+	}
+}
+
+static void console_clear_cursor(void) {
+	uint32_t start_x = console.cursor_x * console.font->width;
+	uint32_t start_y = console.cursor_y * console.font->height;
+
+	for (uint32_t y = 0; y < console.font->height; y++) {
+		for (uint32_t x = 0; x < console.font->width; x++) {
+			fb_putpixel(console.scr_bg, x + start_x, 
+					y + start_y);	
+		}
+	}
+}
+
+static void console_move_cursor(uint16_t x, uint16_t y) {
+	console.cursor_x = x;
+	console.cursor_y = y;
+	console_draw_cursor();
 }
