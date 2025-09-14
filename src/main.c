@@ -5,6 +5,7 @@
 #include <io/framebuffer.h>
 #include <io/console.h>
 #include <libk/stdio.h>
+#include <kernel/idt.h>
 
 /* Set the base limine revision to 3 (might change it later) */
 __attribute__((used, section(".limine_requests")))
@@ -72,6 +73,9 @@ void main(void) {
 
 	puts("Framebuffer Initialized\n");
 	puts("Console Initialized\n");
+
+	init_idt();
+	puts("IDT Initialized\n");
 
 	puts("Kernel is ready!!!\n");
 	

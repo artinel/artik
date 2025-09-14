@@ -18,3 +18,13 @@ void *memmove(void *dest, const void *src, size_t n) {
 
 	return dest;
 }
+
+void *memset(void *dest, int c, size_t count) {
+	uint8_t *ptr = (uint8_t *) dest;
+	
+	for (size_t i = 0; i < count; i++) {
+		ptr[i] = (uint8_t) c;
+	}
+
+	return dest;
+}
