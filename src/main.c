@@ -6,6 +6,8 @@
 #include <io/console.h>
 #include <libk/stdio.h>
 #include <kernel/idt.h>
+#include <kernel/isr.h>
+#include <limits.h>
 
 /* Set the base limine revision to 3 (might change it later) */
 __attribute__((used, section(".limine_requests")))
@@ -76,6 +78,10 @@ void main(void) {
 
 	init_idt();
 	puts("IDT Initialized\n");
+
+	init_isr();
+	__asm volatile ("sti");
+	puts("ISRs Initialized\n");
 
 	puts("Kernel is ready!!!\n");
 	
