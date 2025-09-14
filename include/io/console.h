@@ -21,7 +21,7 @@ struct console{
 };
 
 void init_console(void);
-void console_putchar(uint16_t ch);
+int console_putchar(uint16_t ch);
 void console_clear(void);
 void console_set_background(uint32_t bg);
 void console_set_foreground(uint32_t fg);

@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include <io/console.h>
 #include <io/framebuffer.h>
 #include <font/psf.h>
@@ -16,6 +17,7 @@ static void console_draw_cursor(void);
 static void console_clear_cursor(void);
 static void console_scroll(void);
 static void console_move_cursor(uint16_t x, uint16_t y);
+static bool is_init = false;
 
 void init_console(){
 	console.char_bg = 0x000000;	/* set background to black */
@@ -33,11 +35,16 @@ void init_console(){
 	console.cursor_row = console.row;
 
 	console_draw_cursor();
+	is_init = true;
 }
 
 
-void console_putchar(uint16_t ch) {
+int console_putchar(uint16_t ch) {
 	
+	if (is_init == false) {
+		return -1;
+	}
+
 	/* clear the last position of cursor */
 	console_clear_cursor();
 
@@ -51,7 +58,7 @@ void console_putchar(uint16_t ch) {
 		}
 		console_move_cursor(console.col + 1, console.row);	
 
-		return;
+		return 0;
 	}
 
 	/* newline support */
@@ -63,19 +70,19 @@ void console_putchar(uint16_t ch) {
 		}
 
 		console_move_cursor(console.col, console.row);
-		return;
+		return 0;
 	}
 
 	/* carriage return support */
 	if (ch == '\r') {
 		console.col = 0;
 		console_move_cursor(console.col, console.row);
-		return;
+		return 0;
 	}
 
 	/* check for invalid font */
 	if (console.font->magic != PSF2_FONT_MAGIC) {
-		return;		
+		return -1;		
 	}
 
 	/* ensure the character is within bound */
@@ -131,6 +138,8 @@ void console_putchar(uint16_t ch) {
 	}
 
 	console_move_cursor(console.col, console.row);
+
+	return 0;
 }
 
 static void console_scroll(void){

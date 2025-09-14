@@ -4,6 +4,7 @@
 #include <limine.h>
 #include <io/framebuffer.h>
 #include <io/console.h>
+#include <libk/stdio.h>
 
 /* Set the base limine revision to 3 (might change it later) */
 __attribute__((used, section(".limine_requests")))
@@ -69,15 +70,10 @@ void main(void) {
 	/* Initialize the console */
 	init_console();
 
-	console_paint_background(0xFFFFFF);
-	console_set_background(0xFFFFFF);
-	console_set_foreground(0x0000FF);
+	puts("Framebuffer Initialized\n");
+	puts("Console Initialized\n");
 
-	const char *hello = "Welcome to artik v0.0.1";
-
-	while (*hello) {
-		console_putchar(*hello++);
-	}
+	puts("Kernel is ready!!!\n");
 	
 	/* We are done. just halt the kernel*/
 	halt();
