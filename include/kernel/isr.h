@@ -9,6 +9,7 @@
 #define ISR_DPL_R3	0x3
 #define ISR_NO_IST	0x0
 #define ISR_IST_DF	0x1
+#define ISR_IST_NM	0x2
 
 struct registers {
     // General purpose registers (pushed first)
