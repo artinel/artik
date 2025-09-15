@@ -8,6 +8,7 @@
 #include <kernel/idt.h>
 #include <kernel/isr.h>
 #include <limits.h>
+#include <logo.h>
 
 /* Set the base limine revision to 3 (might change it later) */
 __attribute__((used, section(".limine_requests")))
@@ -72,7 +73,35 @@ void main(void) {
 
 	/* Initialize the console */
 	init_console();
+	console_set_foreground(0x1E88E5);
 
+	struct console *console = console_get_self();
+
+	uint32_t logo_len = 0;
+
+	while (logo[logo_len] != '\n') {
+		logo_len++;
+	}
+
+	if (logo_len > console->max_col) {
+		goto logo_too_big;
+	}
+
+	logo_len = console->max_col - logo_len; 
+	logo_len /= 2;
+	
+	uint32_t index = 0;
+	while (logo[index] != 0) {
+		if (console->col == 0) {
+			console->col += logo_len;
+		}
+		putchar(logo[index]);
+		index++;
+	}
+
+logo_too_big:
+
+	console_set_foreground(0xFFFFFF);
 	puts("Framebuffer Initialized\n");
 	puts("Console Initialized\n");
 
