@@ -93,7 +93,7 @@ void main(void) {
 	uint32_t index = 0;
 	while (logo[index] != 0) {
 		if (console->col == 0) {
-			console->col += logo_len;
+			console->col = logo_len;
 		}
 		putchar(logo[index]);
 		index++;
