@@ -83,24 +83,20 @@ void main(void) {
 		logo_len++;
 	}
 
-	if (logo_len > console->max_col) {
-		goto logo_too_big;
-	}
-
-	logo_len = console->max_col - logo_len; 
-	logo_len /= 2;
-	
-	uint32_t index = 0;
-	while (logo[index] != 0) {
-		if (console->col == 0) {
-			console->col = logo_len;
+	if (logo_len <= console->max_col) {
+		logo_len = console->max_col - logo_len; 
+		logo_len /= 2;
+		
+		uint32_t index = 0;
+		while (logo[index] != 0) {
+			if (console->col == 0) {
+				console->col = logo_len;
+			}
+			putchar(logo[index]);
+			index++;
 		}
-		putchar(logo[index]);
-		index++;
 	}
-
-logo_too_big:
-
+	
 	console_set_foreground(0xFFFFFF);
 	puts("Framebuffer Initialized\n");
 	puts("Console Initialized\n");
