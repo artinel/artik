@@ -31,13 +31,13 @@ static void *irq_routines[16] = {
 	NULL, NULL, NULL, NULL
 };
 
-void irq_install_routine(uint8_t irq, void (*handler)(struct registers *regs)) {
+void irq_install_handler(uint8_t irq, void (*handler)(struct registers *regs)) {
 	if (irq <= 15) {
 		irq_routines[irq] = handler;
 	}
 }
 
-void irq_uninstall_routine(uint8_t irq) {
+void irq_uninstall_handler(uint8_t irq) {
 	if (irq <= 15) {
 		irq_routines[irq] = NULL;
 	}
