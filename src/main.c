@@ -7,6 +7,8 @@
 #include <libk/stdio.h>
 #include <kernel/idt.h>
 #include <kernel/isr.h>
+#include <kernel/pic.h>
+#include <kernel/irq.h>
 #include <limits.h>
 #include <logo.h>
 
@@ -112,8 +114,16 @@ logo_too_big:
 	__asm volatile ("sti");
 	puts("ISRs Initialized\n");
 
+	pic_remap(MASTER_V_OFFSET, SLAVE_V_OFFSET);
+	puts("PIC remapped\n");
+
+	init_irq();
+	puts("IRQ initialized\n");
+
 	puts("Kernel is ready!!!\n");
 	
+	int a = 5 / 0;
+
 	/* We are done. just halt the kernel*/
 	halt();
 }
