@@ -10,6 +10,7 @@
 #include <kernel/pic.h>
 #include <kernel/irq.h>
 #include <kernel/pit.h>
+#include <kernel/kdsh.h>
 #include <io/ps2_keyboard.h>
 #include <limits.h>
 #include "logo.h"
@@ -131,12 +132,9 @@ logo_too_big:
 	
 	puts("Kernel is ready!!!\n");
 	
-	char buf[50];
-	gets(buf, 50);
-	putchar('\n');
+	puts("Entering Kernel Debug Shell\n");
 
-	puts("YOU ENTERED : ");
-	puts(buf);
+	init_kdsh();
 
 	/* We are done. just halt the kernel*/
 	halt();
