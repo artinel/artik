@@ -25,11 +25,11 @@ void init_kdsh(void) {
 
 static void process_cmd(const char *cmd) {
 	if (strcmp(cmd, "help") == 0) {
-		printf("version  Print kernel version\n");
-		printf("paint_bg Paint console background\n");
-		printf("set_bg   Set console character background color\n");
-		printf("set_fg   Set console character foreground color\n");
-		printf("clear    Clear the screen\n");
+		printf("version  \tPrint kernel version\n");
+		printf("paint_bg \tPaint console background\n");
+		printf("set_bg   \tSet console character background color\n");
+		printf("set_fg   \tSet console character foreground color\n");
+		printf("clear    \tClear the screen\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
