@@ -5,6 +5,8 @@
 #include <io/ps2_keyboard.h>
 #include <libk/ctype.h>
 #include <libk/ascii.h>
+#include <stdarg.h>
+#include <libk/stdlib.h>
 
 int putchar(int c) {
 	if (console_putchar(c) >= 0) {
@@ -65,4 +67,42 @@ char *gets(char *buffer, uint32_t count) {
 	buffer[index] = '\0';
 
 	return buffer;
+}
+
+int printf(const char *str, ...) {
+	va_list v_list;
+	va_start(v_list, str);
+	uint32_t index = 0;
+	char c = 0;
+	while ((c = str[index]) != 0) {
+		if (c == '%') {
+			char p_holder = str[index + 1];
+			if (p_holder == 's') {
+				puts(va_arg(v_list, char*));
+				index += 2;
+				continue;
+			}
+			
+			if (p_holder == 'd') {
+				char buffer[20];
+				itoa(va_arg(v_list, long), buffer, 
+						sizeof(buffer), BASE_10);
+				puts(buffer);
+				index += 2;
+				continue;
+			}
+
+			if (p_holder == 'x') {
+				char buffer[20];
+				itoa(va_arg(v_list, long), buffer, 
+						sizeof(buffer), BASE_16);
+				puts(buffer);
+				index += 2;
+				continue;
+			}
+		} else {
+			putchar(c);
+			index++;
+		}
+	}
 }

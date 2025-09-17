@@ -9,5 +9,6 @@ int putchar(int c);
 int puts(const char *str);
 int getchar(void);
 char *gets(char *buffer, uint32_t count);
+int printf(const char *str, ...);
 
 #endif
