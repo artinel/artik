@@ -89,7 +89,6 @@ void ps2_keyboard_handler(struct registers *r) {
 	}
 
 	if (char_mode == false) {
-		puts("CHAR MOD IS FALSE\n");
 		return;
 	}
 
