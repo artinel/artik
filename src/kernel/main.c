@@ -12,7 +12,7 @@
 #include <kernel/pit.h>
 #include <io/ps2_keyboard.h>
 #include <limits.h>
-#include <logo.h>
+#include "logo.h"
 #include <ctype.h>
 
 /* Set the base limine revision to 3 (might change it later) */
