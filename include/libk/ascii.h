@@ -1,0 +1,153 @@
+#ifndef __LIBK_ASCII_H_
+#define __LIBK_ASCII_H_
+
+#define ASCII_NULL		0x00
+#define ASCII_SOH		0x01
+#define ASCII_STX		0x02
+#define ASCII_ETX		0x03
+#define ASCII_EOT		0x04
+#define ASCII_ENQ		0x05
+#define ASCII_ACK		0x06
+#define ASCII_BEL		0x07
+#define ASCII_BS		0x08
+#define ASCII_HT		0x09
+#define ASCII_LF		0x0A
+#define ASCII_VT		0x0B
+#define ASCII_FF		0x0C
+#define ASCII_CR		0x0D
+#define ASCII_SO		0x0E
+#define ASCII_SI		0x0F
+#define ASCII_DLE		0x10
+#define ASCII_DC1		0x11
+#define ASCII_DC2		0x12
+#define ASCII_DC3		0x13
+#define ASCII_DC4		0x14
+#define ASCII_NAK		0x15
+#define ASCII_SYN		0x16
+#define ASCII_ETB		0x17
+#define ASCII_CAN		0x18
+#define ASCII_EM		0x19
+#define ASCII_SUB		0x1A
+#define ASCII_ESC		0x1B
+#define ASCII_FS		0x1C
+#define ASCII_GS		0x1D
+#define ASCII_RS		0x1E
+#define ASCII_US		0x1F
+#define ASCII_SP		0x20
+#define ASCII_EXCL		0x21
+#define ASCII_QUOT		0x22
+#define ASCII_NUM		0x23
+#define ASCII_DOLLAR		0x24
+#define ASCII_PERCNT		0x25
+#define ASCII_AMP		0x26
+#define ASCII_APOS		0x27
+#define ASCII_LPAREN		0x28
+#define ASCII_RPAREN		0x29
+#define ASCII_AST		0x2A
+#define ASCII_PLUS		0x2B
+#define ASCII_COMMA		0x2C
+#define ASCII_MINUS		0x2D
+#define ASCII_PERIOD		0x2E
+#define ASCII_SOL		0x2F
+#define ASCII_ZERO		0x30
+#define ASCII_ONE		0x31
+#define ASCII_TWO		0x32
+#define ASCII_THREE		0x33
+#define ASCII_FOUR		0x34
+#define ASCII_FIVE		0x35
+#define ASCII_SIX		0x36
+#define ASCII_SEVEN		0x37
+#define ASCII_EIGHT		0x38
+#define ASCII_NINE		0x39
+#define ASCII_COLON		0x3A
+#define ASCII_SEMI		0x3B
+#define ASCII_LT		0x3C
+#define ASCII_EQUALS		0x3D
+#define ASCII_GT		0x3E
+#define ASCII_QUEST		0x3F
+#define ASCII_COMMAT		0x40
+#define ASCII_A			0x41
+#define ASCII_B			0x42
+#define ASCII_C			0x43
+#define ASCII_D			0x44
+#define ASCII_E			0x45
+#define ASCII_F			0x46
+#define ASCII_G			0x47
+#define ASCII_H			0x48
+#define ASCII_I			0x49
+#define ASCII_J			0x4A
+#define ASCII_K			0x4B
+#define ASCII_L			0x4C
+#define ASCII_M			0x4D
+#define ASCII_N			0x4E
+#define ASCII_O			0x4F
+#define ASCII_P			0x50
+#define ASCII_Q			0x51
+#define ASCII_R			0x52
+#define ASCII_S			0x53
+#define ASCII_T			0x54
+#define ASCII_U			0x55
+#define ASCII_V			0x56
+#define ASCII_W			0x57
+#define ASCII_X			0x58
+#define ASCII_Y			0x59
+#define ASCII_Z			0x5A
+#define ASCII_LSQB		0x5B
+#define ASCII_BSOL		0x5C
+#define ASCII_RSQB		0x5D
+#define ASCII_HAT		0x5E
+#define ASCII_LOWBAR		0x5F
+#define ASCII_GRAVE		0x60
+#define ASCII_a			0x61
+#define ASCII_b			0x62
+#define ASCII_c			0x63
+#define ASCII_d			0x64
+#define ASCII_e			0x65
+#define ASCII_f			0x66
+#define ASCII_g			0x67
+#define ASCII_h			0x68
+#define ASCII_i			0x69
+#define ASCII_j			0x6A
+#define ASCII_k			0x6B
+#define ASCII_l			0x6C
+#define ASCII_m			0x6D
+#define ASCII_n			0x6E
+#define ASCII_o			0x6F
+#define ASCII_p			0x70
+#define ASCII_q			0x71
+#define ASCII_r			0x72
+#define ASCII_s			0x73
+#define ASCII_t			0x74
+#define ASCII_u			0x75
+#define ASCII_v			0x76
+#define ASCII_w			0x77
+#define ASCII_x			0x78
+#define ASCII_y			0x79
+#define ASCII_z			0x7A
+#define ASCII_LCUB		0x7B
+#define ASCII_VERBAR		0x7C
+#define ASCII_RCUB		0x7D
+#define ASCII_TILDE		0x7E
+#define ASCII_DEL		0x7F
+
+char ascii_table[128] = {
+       	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 	/* 0-7 */
+	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 	/* 8-15 */
+	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 	/* 16-23 */
+	0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 	/* 24-31 */
+	' ',  '!',  '"',  '#',  '$',  '%',  '&',  '\'', 	/* 32-39 */
+	'(',  ')',  '*',  '+',  ',',  '-',  '.',  '/',   	/* 40-47 */
+	'0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',   	/* 48-55 */
+	'8',  '9',  ':',  ';',  '<',  '=',  '>',  '?',   	/* 56-63 */
+	'@',  'A',  'B',  'C',  'D',  'E',  'F',  'G',   	/* 64-71 */
+	'H',  'I',  'J',  'K',  'L',  'M',  'N',  'O',   	/* 72-79 */
+	'P',  'Q',  'R',  'S',  'T',  'U',  'V',  'W',   	/* 80-87 */
+	'X',  'Y',  'Z',  '[',  '\\', ']',  '^',  '_',   	/* 88-95 */
+	'`',  'a',  'b',  'c',  'd',  'e',  'f',  'g',   	/* 96-103 */
+	'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',   	/* 104-111 */
+	'p',  'q',  'r',  's',  't',  'u',  'v',  'w',   	/* 112-119 */
+	'x',  'y',  'z',  '{',  '|',  '}',  '~',  0x7F   	/* 120-127 */
+};
+
+
+#endif
