@@ -9,6 +9,7 @@
 #include <kernel/isr.h>
 #include <kernel/pic.h>
 #include <kernel/irq.h>
+#include <io/ps2_keyboard.h>
 #include <limits.h>
 #include <logo.h>
 
@@ -115,14 +116,15 @@ logo_too_big:
 	puts("ISRs Initialized\n");
 
 	pic_remap(MASTER_V_OFFSET, SLAVE_V_OFFSET);
-	puts("PIC remapped\n");
+	puts("PIC Remapped\n");
 
 	init_irq();
-	puts("IRQ initialized\n");
+	puts("IRQ Initialized\n");
 
-	puts("Kernel is ready!!!\n");
+	init_ps2_keyboard();
+	puts("PS2 Keyboard Initialized\n");
 	
-	int a = 5 / 0;
+	puts("Kernel is ready!!!\n");
 
 	/* We are done. just halt the kernel*/
 	halt();
