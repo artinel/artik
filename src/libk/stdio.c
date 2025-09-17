@@ -49,8 +49,12 @@ char *gets(char *buffer, uint32_t count) {
 	uint32_t index = 0;
 	uint8_t ch = 0;
 
-	while ((ch = getchar()) != '\n' && index < count - 1) {
+	while ((ch = getchar()) != '\n') {
 		if (isprint(ch) || isspace(ch) || ch == '\t') {
+			if (index == count - 1) {
+				break;
+			}
+
 			buffer[index] = ch;
 			index++;
 			putchar(ch);
