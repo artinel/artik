@@ -109,13 +109,38 @@ void init_isr(void) {
 
 void isr_fault_handler(struct registers *regs) {
 	if (regs->int_no < 32) {
-		console_paint_background(0xFF0000);
-		console_set_background(0xFF0000);
+		console_paint_background(0xD81B63);
+		console_set_background(0xD81B63);
 		console_set_foreground(0xFFFFFF);
-		puts("Exception : ");
-		puts(exception_msg[regs->int_no]);
-		putchar('\n');
-		puts("System halted!!!\n");
+		printf("Exception : %s\n", exception_msg[regs->int_no]);
+		printf("RAX = 0x%ux\n", regs->rax);
+		printf("RBX = 0x%ux\n", regs->rbx);
+		printf("RCX = 0x%ux\n", regs->rcx);
+		printf("RDX = 0x%ux\n", regs->rdx);
+		printf("RSI = 0x%ux\n", regs->rsi);
+		printf("RDI = 0x%ux\n", regs->rdi);
+		printf("RBP = 0x%ux\n", regs->rbp);
+		printf("R8  = 0x%ux\n", regs->r8);
+		printf("R9  = 0x%ux\n", regs->r9);
+		printf("R10 = 0x%ux\n", regs->r10);
+		printf("R11 = 0x%ux\n", regs->r11);
+		printf("R12 = 0x%ux\n", regs->r12);
+		printf("R13 = 0x%ux\n", regs->r13);
+		printf("R14 = 0x%ux\n", regs->r14);
+		printf("R15 = 0x%ux\n", regs->r15);
+		printf("DS  = 0x%ux\n", regs->ds);
+		printf("ES  = 0x%ux\n", regs->es);
+		printf("FS  = 0x%ux\n", regs->fs);
+		printf("GS  = 0x%ux\n", regs->gs);
+		printf("RIP = 0x%ux\n", regs->rip);
+		printf("CS  = 0x%ux\n", regs->cs);
+		printf("RSP = 0x%ux\n", regs->rsp);
+		printf("SS  = 0x%ux\n", regs->ss);
+		printf("RFLAGS = 0x%ux\n", regs->rflags);
+		printf("INTERRUPT NUMBER = 0x%ux\n", regs->int_no);
+		printf("ERROR CODE = 0x%ux\n", regs->err_code);
+		
+		printf("System Halted!!!\n");
 
 		while(1) {}
 	}
