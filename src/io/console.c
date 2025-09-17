@@ -251,33 +251,57 @@ struct console* console_get_self(void) {
 
 void console_cursor_forward(int c) {
 	console_clear_cursor();
-	console.cursor_col++;
-	console.col++;
+	uint8_t diff = 1;
+
+	if (c == '\t') {
+		diff = TAB_SIZE;
+	}
+
+	if ((console.cursor_col + diff) > console.max_col - 1) {
+		console.cursor_col = 0;
+		if (console.cursor_row < console.max_row) {
+			console.cursor_row++;
+		}
+	} else {
+		console.cursor_col += diff;
+	}
+
+	if ((console.col + diff) < console.max_col - 1) {
+		console.col = 0;
+		if (console.row < console.max_row) {
+			console.row++;
+		}
+	} else {
+		console.col += diff;
+	}
+
 	console_draw_cursor();
 }
 
 void console_cursor_backward(int c) {
 	console_clear_cursor();
-	if (c == '\t'){
-		console.cursor_col -= TAB_SIZE;
-		console.col -= TAB_SIZE;
-	} else {
-		console.cursor_col--;
-		console.col--;
+	uint8_t diff = 1;
+
+	if (c == '\t') {
+		diff = TAB_SIZE;
 	}
 
-	if (console.col < 0) {
-		console.col = 0;
-		if (console.row > 0){
-			console.row--;
-		}
-	}
-
-	if (console.cursor_col < 0) {
-		console.cursor_col = 0;
+	if ((console.cursor_col - diff) < 0) {
+		console.cursor_col = console.max_col - 1;
 		if (console.cursor_row > 0) {
 			console.cursor_row--;
 		}
+	} else {
+		console.cursor_col -= diff;
+	}
+
+	if ((console.col - diff) < 0) {
+		console.col = console.max_col - 1;
+		if (console.row > 0) {
+			console.row--;
+		}
+	} else {
+		console.col -= diff;
 	}
 
 	console_draw_cursor();
