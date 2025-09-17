@@ -1,5 +1,6 @@
 #include <libk/stdlib.h>
 #include <stdint.h>
+#include <libk/ctype.h>
 
 static uint8_t digit_count(int64_t num, enum base_type type) {
 	
@@ -122,4 +123,18 @@ void uitoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 	}
 
 	buffer[term] = '\0';
+}
+
+uint64_t uatoi(const char *str) {
+	uint64_t res = 0;
+	const char *p_str = str;
+	while (*p_str != 0) {
+		if (isdigit(*p_str)) {
+			res *= 10;
+			res += (*p_str - '0');
+		}
+		p_str++;
+	}
+
+	return res;
 }

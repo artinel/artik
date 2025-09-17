@@ -3,6 +3,7 @@
 #include <io/console.h>
 #include <libk/string.h>
 #include <kernel/version.h>
+#include <libk/stdlib.h>
 
 enum color_type {
 	PAINT_BG,
@@ -12,6 +13,7 @@ enum color_type {
 
 static void process_cmd(const char *cmd);
 static void set_color(enum color_type type);
+static void interrupt(void);
 
 void init_kdsh(void) {
 	while (1) {
@@ -30,6 +32,7 @@ static void process_cmd(const char *cmd) {
 		printf("set_bg   \tSet console character background color\n");
 		printf("set_fg   \tSet console character foreground color\n");
 		printf("clear    \tClear the screen\n");
+		printf("int      \tInterrupt the kernel\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -54,6 +57,11 @@ static void process_cmd(const char *cmd) {
 
 	if (strcmp(cmd, "set_fg") == 0) {
 		set_color(FG);
+		return;
+	}
+
+	if (strcmp(cmd, "int") == 0) {
+		interrupt();
 		return;
 	}
 
@@ -92,5 +100,116 @@ static void set_color(enum color_type type) {
 		console_set_background(color);
 	} else {
 		console_set_foreground(color);
+	}
+}
+
+static void interrupt(void) {
+	char buffer[3];
+	printf("Enter the interrupt number(0 - 31) : ");
+	gets(buffer, 3);
+	uint8_t res = uatoi(buffer);
+	
+	if (res > 31) {
+		printf("Interrupt number must be between 0 and 31\n");
+		return;
+	}
+
+	switch(res) {
+		case 0:
+			__asm__ volatile("int $0");
+			break;
+		case 1:
+			__asm__ volatile("int $1");
+			break;
+		case 2:
+			__asm__ volatile("int $2");
+			break;
+		case 3:
+			__asm__ volatile("int $3");
+			break;
+		case 4:
+			__asm__ volatile("int $4");
+			break;
+		case 5:
+			__asm__ volatile("int $5");
+			break;
+		case 6:
+			__asm__ volatile("int $6");
+			break;
+		case 7:
+			__asm__ volatile("int $7");
+			break;
+		case 8:
+			__asm__ volatile("int $8");
+			break;
+		case 9:
+			__asm__ volatile("int $9");
+			break;
+		case 10:
+			__asm__ volatile("int $10");
+			break;
+		case 11:
+			__asm__ volatile("int $11");
+			break;
+		case 12:
+			__asm__ volatile("int $12");
+			break;
+		case 13:
+			__asm__ volatile("int $13");
+			break;
+		case 14:
+			__asm__ volatile("int $14");
+			break;
+		case 15:
+			__asm__ volatile("int $15");
+			break;
+		case 16:
+			__asm__ volatile("int $16");
+			break;
+		case 17:
+			__asm__ volatile("int $17");
+			break;
+		case 18:
+			__asm__ volatile("int $18");
+			break;
+		case 19:
+			__asm__ volatile("int $19");
+			break;
+		case 20:
+			__asm__ volatile("int $20");
+			break;
+		case 21:
+			__asm__ volatile("int $21");
+			break;
+		case 22:
+			__asm__ volatile("int $22");
+			break;
+		case 23:
+			__asm__ volatile("int $23");
+			break;
+		case 24:
+			__asm__ volatile("int $24");
+			break;
+		case 25:
+			__asm__ volatile("int $25");
+			break;
+		case 26:
+			__asm__ volatile("int $26");
+			break;
+		case 27:
+			__asm__ volatile("int $27");
+			break;
+		case 28:
+			__asm__ volatile("int $28");
+			break;
+		case 29:
+			__asm__ volatile("int $29");
+			break;
+		case 30:
+			__asm__ volatile("int $30");
+			break;
+		case 31:
+			__asm__ volatile("int $31");
+			break;
 	}
 }
