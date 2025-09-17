@@ -5,6 +5,7 @@
 #include <font/psf.h>
 #include <font/default.psf.h>
 #include <libk/string.h>
+#include <libk/ascii.h>
 
 /* [TODO] Implement redrawing character at cursor position when we have malloc */
 
@@ -78,6 +79,11 @@ int console_putchar(uint16_t ch) {
 		console.col = 0;
 		console_move_cursor(console.col, console.row);
 		return 0;
+	}
+
+	/* Backspace support */
+	if (ch == ASCII_BS) {
+		console_backspace(ch);
 	}
 
 	/* check for invalid font */
@@ -241,4 +247,42 @@ void console_putchar_at(uint16_t ch, uint16_t col, uint16_t row) {
 
 struct console* console_get_self(void) {
 	return &console;
+}
+
+void console_cursor_forward(int c) {
+	console_clear_cursor();
+	console.cursor_col++;
+	console.col++;
+	console_draw_cursor();
+}
+
+void console_cursor_backward(int c) {
+	console_clear_cursor();
+	if (c == '\t'){
+		console.cursor_col -= TAB_SIZE;
+		console.col -= TAB_SIZE;
+	} else {
+		console.cursor_col--;
+		console.col--;
+	}
+
+	if (console.col < 0) {
+		console.col = 0;
+		if (console.row > 0){
+			console.row--;
+		}
+	}
+
+	if (console.cursor_col < 0) {
+		console.cursor_col = 0;
+		if (console.cursor_row > 0) {
+			console.cursor_row--;
+		}
+	}
+
+	console_draw_cursor();
+}
+
+void console_backspace(int c) {
+	console_cursor_backward(c);
 }

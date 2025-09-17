@@ -13,6 +13,7 @@
 #include <io/ps2_keyboard.h>
 #include <limits.h>
 #include <logo.h>
+#include <ctype.h>
 
 /* Set the base limine revision to 3 (might change it later) */
 __attribute__((used, section(".limine_requests")))
@@ -129,6 +130,13 @@ logo_too_big:
 	puts("PS2 Keyboard Initialized\n");
 	
 	puts("Kernel is ready!!!\n");
+	
+	char buf[50];
+	gets(buf, 50);
+	putchar('\n');
+
+	puts("YOU ENTERED : ");
+	puts(buf);
 
 	/* We are done. just halt the kernel*/
 	halt();

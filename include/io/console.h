@@ -28,5 +28,8 @@ void console_set_foreground(uint32_t fg);
 void console_paint_background(uint32_t bg);
 void console_putchar_at(uint16_t ch, uint16_t col, uint16_t row);
 struct console* console_get_self(void);
+void console_cursor_forward(int c);
+void console_cursor_backward(int c);
+void console_backspace(int c);
 
 #endif
