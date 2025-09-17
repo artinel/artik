@@ -21,6 +21,9 @@ uint16_t pit_get_count(void) {
 
 
 void pit_handler(struct registers *regs) {
+	if (regs->int_no != 32) {
+		return;
+	}
 	tick++;
 	if (tick == count) {
 		if (pit_callback != 0) {

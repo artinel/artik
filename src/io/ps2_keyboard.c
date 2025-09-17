@@ -72,7 +72,10 @@ static bool char_mode = false;
 static void (*raw_callback)(uint8_t code, bool is_extended);
 static void (*char_callback)(uint8_t ch);
 
-void ps2_keyboard_handler(struct registers *r) {
+void ps2_keyboard_handler(struct registers *regs) {
+	if (regs->int_no != 33) {
+		return;
+	}
 	outb(PS2_KB_STATUS, 0);
 	uint8_t scancode = inb(PS2_KB_DATA);
 

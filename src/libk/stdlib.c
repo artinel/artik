@@ -63,7 +63,7 @@ void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 	}
 
 	if (num < 0) {
-		if (buf_size < count + 2) {
+		if (buf_size < (uint32_t)count + 2) {
 			buffer[0] = 0;
 			return;
 		}
@@ -74,7 +74,7 @@ void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 		term++;
 	}
 	
-	if (buf_size < count + 1) {
+	if (buf_size < (uint32_t)count + 1) {
 		buffer[0] = 0;
 		return;
 	}
@@ -105,7 +105,7 @@ void uitoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 		divisor = 16;
 	}
 
-	if (buf_size < count + 1) {
+	if (buf_size < (uint32_t)count + 1) {
 		buffer[0] = 0;
 		return;
 	}

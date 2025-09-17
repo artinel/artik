@@ -156,4 +156,5 @@ int printf(const char *str, ...) {
 			index++;
 		}
 	}
+	return index;
 }
