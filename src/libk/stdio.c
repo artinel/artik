@@ -8,6 +8,8 @@
 #include <stdarg.h>
 #include <libk/stdlib.h>
 
+#define BUF_SIZE	20
+
 int putchar(int c) {
 	if (console_putchar(c) >= 0) {
 		return c;
@@ -83,8 +85,8 @@ int printf(const char *str, ...) {
 				continue;
 			}
 			
-			if (p_holder == 'd') {
-				char buffer[20];
+			if (p_holder == 'd' || p_holder == 'l') {
+				char buffer[BUF_SIZE];
 				itoa(va_arg(v_list, long), buffer, 
 						sizeof(buffer), BASE_10);
 				puts(buffer);
@@ -93,13 +95,62 @@ int printf(const char *str, ...) {
 			}
 
 			if (p_holder == 'x') {
-				char buffer[20];
+				char buffer[BUF_SIZE];
 				itoa(va_arg(v_list, long), buffer, 
 						sizeof(buffer), BASE_16);
 				puts(buffer);
 				index += 2;
 				continue;
 			}
+
+			if (p_holder == 'c') {
+				putchar(va_arg(v_list, int));
+				index += 2;
+				continue;
+			}
+			
+			if (p_holder == 'u') {
+				char u_holder = str[index + 2];
+				if (u_holder == 'd' || u_holder == 'l') {
+					char buffer[BUF_SIZE];
+					uitoa(va_arg(v_list, unsigned long), 
+							buffer, 
+							sizeof(buffer),
+							BASE_10);
+					puts(buffer);
+					index += 3;
+					continue;
+				}
+
+				if (u_holder == 'x') {
+					char buffer[BUF_SIZE];
+					uitoa(va_arg(v_list, unsigned long), 
+							buffer, 
+							sizeof(buffer),
+							BASE_16);
+					puts(buffer);
+					index += 3;
+					continue;
+				}
+
+				if (u_holder == 'c') {
+					putchar(va_arg(v_list, int));
+					index += 3;
+					continue;
+				}
+
+				putchar('%');
+				putchar(p_holder);
+				putchar(u_holder);
+				index += 3;
+				continue;
+			}
+
+			putchar('%');
+			putchar(p_holder);
+			index += 2;
+			continue;
+
 		} else {
 			putchar(c);
 			index++;

@@ -9,6 +9,7 @@ enum base_type{
 	BASE_16
 };
 
-void itoa(long num, char *buffer, uint32_t buf_size, enum base_type type);
+void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type);
+void uitoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type);
 
 #endif
