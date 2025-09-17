@@ -9,6 +9,7 @@
 #include <kernel/isr.h>
 #include <kernel/pic.h>
 #include <kernel/irq.h>
+#include <kernel/pit.h>
 #include <io/ps2_keyboard.h>
 #include <limits.h>
 #include <logo.h>
@@ -120,6 +121,9 @@ logo_too_big:
 
 	init_irq();
 	puts("IRQ Initialized\n");
+
+	init_pit();
+	puts("PIT Initialized\n");
 
 	init_ps2_keyboard();
 	puts("PS2 Keyboard Initialized\n");
