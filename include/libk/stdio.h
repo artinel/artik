@@ -5,5 +5,6 @@
 
 int putchar(int c);
 int puts(const char *str);
+int getchar(void);
 
 #endif
