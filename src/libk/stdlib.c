@@ -57,6 +57,13 @@ static uint8_t udigit_count(uint64_t num, enum base_type type) {
 
 
 void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
+	
+	if (num == 0) {
+		buffer[0] = '0';
+		buffer[1] = 0;
+		return;
+	}
+	
 	const char *x_digits = "0123456789ABCDEF";
 	uint8_t count = digit_count(num, type);
 	uint8_t index = count - 1;
@@ -100,6 +107,13 @@ void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 
 
 void uitoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
+	
+	if (num == 0) {
+		buffer[0] = '0';
+		buffer[1] = 0;
+		return;
+	}
+	
 	const char *x_digits = "0123456789ABCDEF";
 	uint8_t count = udigit_count(num, type);
 	uint8_t index = count - 1;
