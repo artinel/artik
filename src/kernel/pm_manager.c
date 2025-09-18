@@ -107,7 +107,7 @@ void *pm_alloc_page(void) {
 		return NULL;
 	}
 
-	/* Searhc from the beginnig if needed*/
+	/* Search from the beginnig if needed*/
 	for (uint64_t i = 0; i < pm_manager.last_allocated_index; i++) {
 		if ((pm_manager.bitmap[i / 8] & (1 << (i % 8))) == 0) {
 			/* Mark page as allocated */
