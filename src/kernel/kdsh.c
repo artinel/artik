@@ -18,6 +18,7 @@ static void set_color(enum color_type type);
 static void interrupt(void);
 static void kdsh_sleep(void);
 static void kdsh_memmap(void);
+static void kdsh_meminfo(void);
 
 void init_kdsh(void) {
 	while (1) {
@@ -39,6 +40,7 @@ static void process_cmd(const char *cmd) {
 		printf("int      \tInterrupt the kernel\n");
 		printf("sleep    \tSleep for n seconds\n");
 		printf("memmap   \tPrint memory map\n");
+		printf("meminfo  \tPrint memory information\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -78,6 +80,11 @@ static void process_cmd(const char *cmd) {
 
 	if (strcmp(cmd, "memmap") == 0) {
 		kdsh_memmap();
+		return;
+	}
+
+	if (strcmp(cmd, "meminfo") == 0) {
+		kdsh_meminfo();
 		return;
 	}
 
@@ -263,4 +270,109 @@ static void kdsh_memmap(void) {
 			printf("TYPE = %ud - %s\n", entry->type, types[entry->type]);
 		}
 	}
+}
+
+static void kdsh_meminfo(void) {
+	uint64_t count = memmap_get_entry_count();
+	memmap_entry_t *entry = 0;
+
+	uint64_t total = 0;
+	uint64_t used = 0;
+	uint64_t free = 0;
+
+	for (uint64_t i = 0; i < count; i++) {
+		entry = memmap_get_entry(i);
+		if (entry != NULL) {
+			if (entry->type == MEMMAP_USABLE) {
+				free += entry->length;
+			} else {
+				used += entry->length;
+			}
+
+			total += entry->length;
+		}
+	}
+
+	printf("Select Unit\n1 - Bytes\n2 - KB\n3 - MB\nEnter : ");
+	char buffer[3];
+	gets(buffer, sizeof(buffer));
+	printf("\n");
+	uint64_t unit = uatoi(buffer);
+
+	const char *unit_txt[] = {"Bytes", "KB", "MB"};
+
+	const char *total_unit = unit_txt[0];
+	const char *used_unit = unit_txt[0];
+	const char *free_unit = unit_txt[0];
+
+	if (unit == 2) {
+		if (total >= 1024) {
+			total /= 1024;
+			total_unit = unit_txt[1];	
+		} else {
+			total_unit = unit_txt[0];	
+		}
+
+		if (used >= 1024) {
+			used /= 1024;
+			used_unit = unit_txt[1];
+		} else {
+			used_unit = unit_txt[0];
+		}
+
+		if (free >= 1024) {
+			free /= 1024;
+			free_unit = unit_txt[1];
+		} else {
+			free_unit = unit_txt[0];
+		}
+	}
+
+	if (unit == 3) {
+		if (total >= 1024 * 1024) {
+			total /= (1024 * 1024);
+			total_unit = unit_txt[2];
+		} else {
+			if (total >= 1024) {
+				total /= 1024;
+				total_unit = unit_txt[1];	
+			} else {
+				total_unit = unit_txt[0];	
+			}
+		}
+
+		if (used >= 1024 * 1024) {
+			used /= (1024 * 1024);
+			used_unit = unit_txt[2];
+		} else {
+			if (used >= 1024) {
+				used /= 1024;
+				used_unit = unit_txt[1];	
+			} else {
+				used_unit = unit_txt[0];	
+			}
+		}
+
+
+		if (free >= 1024 * 1024) {
+			free /= (1024 * 1024);
+			free_unit = unit_txt[2];
+		} else {
+			if (free >= 1024) {
+				free /= 1024;
+				free_unit = unit_txt[1];	
+			} else {
+				free_unit = unit_txt[0];	
+			}
+		}
+	}
+
+	if (unit > 3) {
+		printf("Invalid Option. Defaulting to bytes\n");
+	}
+
+	
+	printf("TOTAL MEMORY = %ul %s\n", total, total_unit);
+	printf("USED MEMORY  = %ul %s\n", used, used_unit);
+	printf("FREE MEMORY  = %ul %s\n", free, free_unit);
 }
