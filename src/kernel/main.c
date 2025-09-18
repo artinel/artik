@@ -11,6 +11,7 @@
 #include <kernel/irq.h>
 #include <kernel/pit.h>
 #include <kernel/kdsh.h>
+#include <kernel/mem.h>
 #include <io/ps2_keyboard.h>
 #include <limits.h>
 #include "logo.h"
@@ -60,6 +61,11 @@ void main(void) {
 		halt();
 	}
 
+
+	/* Initialize memory map */
+	init_memmap();
+
+
 	/* Fetch the first framebuffer */
 	struct limine_framebuffer *framebuffer = fb_req.response->framebuffers[0];
 
@@ -108,6 +114,7 @@ void main(void) {
 logo_too_big:
 
 	console_set_foreground(0xFFFFFF);
+	printf("Memory Map Initialized\n");
 	puts("Framebuffer Initialized\n");
 	puts("Console Initialized\n");
 
