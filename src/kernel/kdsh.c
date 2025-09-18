@@ -4,6 +4,8 @@
 #include <libk/string.h>
 #include <kernel/version.h>
 #include <libk/stdlib.h>
+#include <kernel/memmap.h>
+#include <stdlib.h>
 
 enum color_type {
 	PAINT_BG,
@@ -15,6 +17,7 @@ static void process_cmd(const char *cmd);
 static void set_color(enum color_type type);
 static void interrupt(void);
 static void kdsh_sleep(void);
+static void kdsh_memmap(void);
 
 void init_kdsh(void) {
 	while (1) {
@@ -35,6 +38,7 @@ static void process_cmd(const char *cmd) {
 		printf("clear    \tClear the screen\n");
 		printf("int      \tInterrupt the kernel\n");
 		printf("sleep    \tSleep for n seconds\n");
+		printf("memmap   \tPrint memory map\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -69,6 +73,11 @@ static void process_cmd(const char *cmd) {
 
 	if (strcmp(cmd, "sleep") == 0) {
 		kdsh_sleep();
+		return;
+	}
+
+	if (strcmp(cmd, "memmap") == 0) {
+		kdsh_memmap();
 		return;
 	}
 
@@ -228,4 +237,30 @@ static void kdsh_sleep(void) {
 	putchar('\n');
 	uint16_t sec = uatoi(buffer);
 	sleep(sec);
+}
+
+static void kdsh_memmap(void) {
+
+	const char *types[] = {
+		"USABLE",
+		"RESERVED",
+		"ACPI RECLAIMABLE",
+		"ACPI NVS",
+		"BAD MEMORY",
+		"BOOTLOADER RECLAIMABLE",
+		"EXECUTABLE AND MODULES",
+		"FRAMEBUFFER"
+	};
+
+	uint64_t count = memmap_get_entry_count();
+	memmap_entry_t *entry = 0;
+
+	for (uint64_t i = 0; i < count; i++) {
+		entry = memmap_get_entry(i);
+		if (entry != NULL) {
+			printf("BASE = 0x%ux\t", entry->base);
+			printf("LENGTH = 0x%ux\t", entry->length);
+			printf("TYPE = %ud - %s\n", entry->type, types[entry->type]);
+		}
+	}
 }
