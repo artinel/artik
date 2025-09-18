@@ -18,7 +18,7 @@ static uint8_t digit_count(int64_t num, enum base_type type) {
 		num = -(num);
 	}
 
-	if (num == 0) {
+	if (num >= 0 && num <= 9) {
 		return 1;
 	}
 
@@ -40,7 +40,7 @@ static uint8_t udigit_count(uint64_t num, enum base_type type) {
 		divisor = 16;
 	}
 	
-	if (num == 0) {
+	if (num >= 0 && num <= 9) {
 		return 1;
 	}
 
