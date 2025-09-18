@@ -100,8 +100,15 @@ void *pm_alloc_page(void) {
 		}
 	}
 
+	/* If last allocated index is 0 then we have already searched all
+	 * the pages and we did not find a suitable place. */
+	if (pm_manager.last_allocated_index == 0) {
+		/* Out of memory */
+		return NULL;
+	}
+
 	/* Searhc from the beginnig if needed*/
-	for (uint64_t i = 0; i < pm_manager.total_pages; i++) {
+	for (uint64_t i = 0; i < pm_manager.last_allocated_index; i++) {
 		if ((pm_manager.bitmap[i / 8] & (1 << (i % 8))) == 0) {
 			/* Mark page as allocated */
 			pm_manager.bitmap[i / 8] |= (1 << (i % 8));
