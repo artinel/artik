@@ -206,28 +206,25 @@ void console_paint_background(uint32_t bg) {
 }
 
 
-static void console_draw_cursor(void) {
+static void console_change_cursor(bool draw) {
 	uint32_t start_x = console.cursor_col * console.font->width;
 	uint32_t start_y = console.cursor_row * console.font->height;
+	uint32_t color = (draw) ? console.char_fg : console.scr_bg;
 
 	for (uint32_t y = 0; y < console.font->height; y++) {
 		for (uint32_t x = 0; x < console.font->width; x++) {
-			fb_putpixel(console.char_fg, x + start_x, 
-					y + start_y);	
+			fb_putpixel(color, x + start_x, y + start_y);	
 		}
 	}
 }
 
-static void console_clear_cursor(void) {
-	uint32_t start_x = console.cursor_col * console.font->width;
-	uint32_t start_y = console.cursor_row * console.font->height;
 
-	for (uint32_t y = 0; y < console.font->height; y++) {
-		for (uint32_t x = 0; x < console.font->width; x++) {
-			fb_putpixel(console.scr_bg, x + start_x, 
-					y + start_y);	
-		}
-	}
+static void console_draw_cursor(void) {
+	console_change_cursor(true);
+}
+
+static void console_clear_cursor(void) {
+	console_change_cursor(false);
 }
 
 static void console_move_cursor(uint16_t col, uint16_t row) {
