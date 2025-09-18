@@ -12,5 +12,6 @@ enum base_type{
 void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type);
 void uitoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type);
 uint64_t uatoi(const char *str);
+void sleep(uint16_t sec);
 
 #endif

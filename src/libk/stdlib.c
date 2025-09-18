@@ -1,6 +1,10 @@
 #include <libk/stdlib.h>
 #include <stdint.h>
 #include <libk/ctype.h>
+#include <kernel/pit.h>
+#include <stdbool.h>
+
+static bool is_sleep = false;
 
 static uint8_t digit_count(int64_t num, enum base_type type) {
 	
@@ -137,4 +141,26 @@ uint64_t uatoi(const char *str) {
 	}
 
 	return res;
+}
+
+static void sleep_callback(void) {
+	is_sleep = false;
+}
+
+void sleep(uint16_t sec) {
+	/* Save the current pit count so we can restore it later */
+	uint32_t count_tmp = pit_get_count();
+
+	pit_set_count(sec * PIT_COUNT_PER_SEC);
+	pit_set_callback(sleep_callback);
+	pit_start();
+
+	is_sleep = true;
+
+	while (is_sleep == true) {}
+
+	pit_stop();
+	pit_remove_callback();
+	/* Restore the previous pit count */
+	pit_set_count(count_tmp);
 }
