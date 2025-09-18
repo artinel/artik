@@ -14,6 +14,7 @@ enum color_type {
 static void process_cmd(const char *cmd);
 static void set_color(enum color_type type);
 static void interrupt(void);
+static void kdsh_sleep(void);
 
 void init_kdsh(void) {
 	while (1) {
@@ -33,6 +34,7 @@ static void process_cmd(const char *cmd) {
 		printf("set_fg   \tSet console character foreground color\n");
 		printf("clear    \tClear the screen\n");
 		printf("int      \tInterrupt the kernel\n");
+		printf("sleep    \tSleep for n seconds\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -62,6 +64,11 @@ static void process_cmd(const char *cmd) {
 
 	if (strcmp(cmd, "int") == 0) {
 		interrupt();
+		return;
+	}
+
+	if (strcmp(cmd, "sleep") == 0) {
+		kdsh_sleep();
 		return;
 	}
 
@@ -212,4 +219,13 @@ static void interrupt(void) {
 			__asm__ volatile("int $31");
 			break;
 	}
+}
+
+static void kdsh_sleep(void) {
+	printf("Enter seconds to sleep : ");
+	char buffer[4];
+	gets(buffer, sizeof(buffer));
+	putchar('\n');
+	uint16_t sec = uatoi(buffer);
+	sleep(sec);
 }
