@@ -91,7 +91,7 @@ int printf(const char *str, ...) {
 			
 			if (p_holder == 'd' || p_holder == 'l') {
 				char buffer[BUF_SIZE];
-				itoa(va_arg(v_list, long), buffer, 
+				sitoa(va_arg(v_list, long), buffer, 
 						sizeof(buffer), BASE_10);
 				puts(buffer);
 				index += 2;
@@ -100,7 +100,7 @@ int printf(const char *str, ...) {
 
 			if (p_holder == 'x') {
 				char buffer[BUF_SIZE];
-				itoa(va_arg(v_list, long), buffer, 
+				sitoa(va_arg(v_list, long), buffer, 
 						sizeof(buffer), BASE_16);
 				puts(buffer);
 				index += 2;
@@ -117,7 +117,7 @@ int printf(const char *str, ...) {
 				char u_holder = str[index + 2];
 				if (u_holder == 'd' || u_holder == 'l') {
 					char buffer[BUF_SIZE];
-					uitoa(va_arg(v_list, unsigned long), 
+					itoa(va_arg(v_list, unsigned long), 
 							buffer, 
 							sizeof(buffer),
 							BASE_10);
@@ -128,7 +128,7 @@ int printf(const char *str, ...) {
 
 				if (u_holder == 'x') {
 					char buffer[BUF_SIZE];
-					uitoa(va_arg(v_list, unsigned long), 
+					itoa(va_arg(v_list, unsigned long), 
 							buffer, 
 							sizeof(buffer),
 							BASE_16);

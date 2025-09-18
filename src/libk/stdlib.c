@@ -39,24 +39,9 @@ static uint8_t sdigit_count(int64_t num, enum base_type type) {
 
 
 
-void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
+void sitoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 	
-	if (num == 0) {
-		buffer[0] = '0';
-		buffer[1] = 0;
-		return;
-	}
-	
-	const char *x_digits = "0123456789ABCDEF";
 	uint8_t count = sdigit_count(num, type);
-	uint8_t index = count - 1;
-	uint8_t term = count;
-	uint8_t divisor = 10;
-
-	if (type == BASE_16) {
-		divisor = 16;
-	}
-
 	if (num < 0) {
 		if (buf_size < (uint32_t)count + 2) {
 			buffer[0] = 0;
@@ -64,32 +49,16 @@ void itoa(int64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 		}
 		
 		buffer[0] = '-';
+		buffer++;
 		num = -(num);
-		index++;
-		term++;
 	}
+
+	itoa((uint64_t) num, buffer, buf_size - 1, type);
 	
-	if (buf_size < (uint32_t)count + 1) {
-		buffer[0] = 0;
-		return;
-	}
-
-
-	while (num > 0) {
-		if (type == BASE_16) {
-			buffer[index] = x_digits[num % divisor];
-		} else {
-			buffer[index] = (num % divisor) + '0';
-		}
-		index--;
-		num /= divisor;
-	}
-
-	buffer[term] = '\0';
 }
 
 
-void uitoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
+void itoa(uint64_t num, char *buffer, uint32_t buf_size, enum base_type type) {
 	
 	if (num == 0) {
 		buffer[0] = '0';
