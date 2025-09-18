@@ -84,6 +84,7 @@ int console_putchar(uint16_t ch) {
 	/* Backspace support */
 	if (ch == ASCII_BS) {
 		console_backspace(ch);
+		return 0;
 	}
 
 	/* check for invalid font */
