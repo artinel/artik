@@ -11,7 +11,7 @@
 #include <kernel/irq.h>
 #include <kernel/pit.h>
 #include <kernel/kdsh.h>
-#include <kernel/mem.h>
+#include <kernel/memmap.h>
 #include <io/ps2_keyboard.h>
 #include <limits.h>
 #include "logo.h"
