@@ -6,6 +6,8 @@
 #include <libk/stdlib.h>
 #include <kernel/memmap.h>
 #include <stdlib.h>
+#include <kernel/pm_manager.h>
+#include <kernel/paging.h>
 
 enum color_type {
 	PAINT_BG,
@@ -19,6 +21,8 @@ static void interrupt(void);
 static void kdsh_sleep(void);
 static void kdsh_memmap(void);
 static void kdsh_meminfo(void);
+static void kdsh_page_map(void);
+static void kdsh_page_info(void);
 
 void init_kdsh(void) {
 	while (1) {
@@ -32,15 +36,19 @@ void init_kdsh(void) {
 
 static void process_cmd(const char *cmd) {
 	if (strcmp(cmd, "help") == 0) {
-		printf("version  \tPrint kernel version\n");
-		printf("paint_bg \tPaint console background\n");
-		printf("set_bg   \tSet console character background color\n");
-		printf("set_fg   \tSet console character foreground color\n");
-		printf("clear    \tClear the screen\n");
-		printf("int      \tInterrupt the kernel\n");
-		printf("sleep    \tSleep for n seconds\n");
-		printf("memmap   \tPrint memory map\n");
-		printf("meminfo  \tPrint memory information\n");
+		printf("version    \tPrint kernel version\n");
+		printf("paint_bg   \tPaint console background\n");
+		printf("set_bg     \tSet console character background color\n");
+		printf("set_fg     \tSet console character foreground color\n");
+		printf("clear      \tClear the screen\n");
+		printf("int        \tInterrupt the kernel\n");
+		printf("sleep      \tSleep for n seconds\n");
+		printf("memmap     \tPrint memory map\n");
+		printf("meminfo    \tPrint memory information\n");
+		printf("alloc_page \tAllocate a page using pm_alloc_page\n");
+		printf("page_map   \tPrint page map\n");
+		printf("page_info  \tPrint paging information\n");
+		printf("free_page  \tFree a page using pm_free_page\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -85,6 +93,35 @@ static void process_cmd(const char *cmd) {
 
 	if (strcmp(cmd, "meminfo") == 0) {
 		kdsh_meminfo();
+		return;
+	}
+
+	if (strcmp(cmd, "alloc_page") == 0) {
+		void *address = pm_alloc_page();
+		printf("Address = 0x%ux\n", (uint64_t) address);
+		return;
+	}
+
+	if (strcmp(cmd, "page_map") == 0) {
+		kdsh_page_map();
+		return;
+	}
+
+	if (strcmp(cmd, "page_info") == 0) {
+		kdsh_page_info();
+		return;
+	}
+
+	if (strcmp(cmd, "free_page") == 0) {
+		printf("Enter address (Decimal) : ");
+		char buffer[20];
+		gets(buffer, sizeof(buffer));
+		printf("\n");
+		uint64_t address = uatoi(buffer);
+		if (pm_free_page((void *)address) != 0) {
+			printf("Failed to free page(Bad address)\n");
+		}
+
 		return;
 	}
 
@@ -375,4 +412,57 @@ static void kdsh_meminfo(void) {
 	printf("TOTAL MEMORY = %ul %s\n", total, total_unit);
 	printf("USED MEMORY  = %ul %s\n", used, used_unit);
 	printf("FREE MEMORY  = %ul %s\n", free, free_unit);
+}
+
+
+static void kdsh_page_map(void) {
+
+	printf("From (Start from 0) : ");
+	char buffer[20];
+	gets(buffer, sizeof(buffer));
+	printf("\n");
+	uint64_t start = uatoi(buffer);
+
+	printf("To (0 for unlimited) : ");
+	gets(buffer, sizeof(buffer));
+	printf("\n");
+	uint64_t end = uatoi(buffer);
+
+	pm_manager_t *pm_manager = pm_get_manager();
+
+
+	if (end == 0) {
+		end = pm_manager->total_pages;		
+	}
+
+	if (start > end || end > pm_manager->total_pages) {
+		printf("Start must be lesser than end!!!\n");
+		return;
+	}
+
+	for (uint64_t i = start; i <= end; i++) {
+
+		printf("PAGE %ul - ", i);
+		
+		if ((pm_manager->bitmap[i / 8] & (1 << (i % 8))) == 0) {
+			printf("FREE");
+		} else {
+			printf("ALLOCATED");
+		}
+
+		printf("\n");
+		
+	}	
+}
+
+static void kdsh_page_info(void) {
+	pm_manager_t *pm_manager = pm_get_manager();
+	
+	printf("BITMAP ADDRESS = 0x%ux\n", (uint64_t) pm_manager->bitmap);
+	printf("BITMAP SIZE = %ul\n", pm_manager->bitmap_size);
+	printf("TOTAL PAGES = %ul\n", pm_manager->total_pages);
+	printf("USABLE PAGES = %ul\n", pm_manager->usable_pages);
+	printf("LAST ALLOCATED INDEX %ul\n", pm_manager->last_allocated_index);
+	printf("TOTAL SIZE : %ul KB\n", (pm_manager->total_pages * PAGE_SIZE) / 1024);
+	printf("USABLE SIZE : %ul KB\n", (pm_manager->usable_pages * PAGE_SIZE) / 1024);
 }
