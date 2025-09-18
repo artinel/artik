@@ -1,5 +1,5 @@
-#ifndef __KERNEL_MEM_H_
-#define __KERNEL_MEM_H_
+#ifndef __KERNEL_MEMMAP_H_
+#define __KERNEL_MEMMAP_H_
 
 #include <stdint.h>
 
@@ -27,5 +27,7 @@ typedef struct memmap_entry memmap_entry_t;
 typedef struct memmap memmap_t;
 
 void init_memmap(void);
+memmap_entry_t *memmap_get_entry(uint64_t index);
+uint64_t memmap_get_entry_count(void);
 
 #endif
