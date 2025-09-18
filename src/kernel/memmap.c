@@ -1,4 +1,5 @@
 #include <kernel/memmap.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <limine.h>
 
@@ -16,9 +17,10 @@ void init_memmap(void) {
 }
 
 memmap_entry_t *memmap_get_entry(uint64_t index) {
-	if (entry < memmap.entry_count) {
+	if (index < memmap.entry_count) {
 		return memmap.entries[index];
 	}
+	return NULL;
 }
 
 uint64_t memmap_get_entry_count(void) {
