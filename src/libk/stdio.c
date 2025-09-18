@@ -89,9 +89,9 @@ int printf(const char *str, ...) {
 				continue;
 			}
 			
-			if (p_holder == 'd' || p_holder == 'l') {
+			if (p_holder == 'd') {
 				char buffer[BUF_SIZE];
-				sitoa(va_arg(v_list, long), buffer, 
+				sitoa(va_arg(v_list, int), buffer, 
 						sizeof(buffer), BASE_10);
 				puts(buffer);
 				index += 2;
