@@ -16,12 +16,13 @@ struct memmap_entry {
 	uint64_t base;
 	uint64_t length;
 	uint64_t type;
-};
+	uint64_t unused;
+}__attribute__((packed));
 
 struct memmap {
 	uint64_t entry_count;
 	struct memmap_entry **entries;
-};
+}__attribute__((packed));
 
 typedef struct memmap_entry memmap_entry_t;
 typedef struct memmap memmap_t;
