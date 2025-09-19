@@ -28,7 +28,7 @@ typedef struct pm_manager pm_manager_t;
 
 void init_pm_manager(void);
 void *pm_alloc_page(void);
-int pm_free_page(void *address);
+uint8_t pm_free_page(void *address);
 pm_manager_t *pm_get_manager(void);
 
 #endif

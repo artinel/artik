@@ -125,7 +125,7 @@ void *pm_alloc_page(void) {
 	return NULL;
 }
 
-int pm_free_page(void *address) {
+uint8_t pm_free_page(void *address) {
 	uint64_t page = (uint64_t) address / PAGE_SIZE;
 
 	if (page >= pm_manager.total_pages) {
