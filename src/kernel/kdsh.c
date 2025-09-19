@@ -118,8 +118,16 @@ static void process_cmd(const char *cmd) {
 		gets(buffer, sizeof(buffer));
 		printf("\n");
 		uint64_t address = uatoi(buffer);
-		if (pm_free_page((void *)address) != 0) {
-			printf("Failed to free page(Bad address)\n");
+		uint8_t res = pm_free_page((void *)address);
+		if (res == PM_FREE_PAGE_OK) {
+			printf("Freed page in address %ul\n", address);
+		} else if (res == PM_PAGE_FREE_INVL) {
+			printf("Invalid page(Bad Address)\n");
+		} else if (res == PM_PAGE_FREE_NALLOC) {
+			printf("Page is already free\n");
+		} else if (res == PM_PAGE_FREE_NKERNEL) {
+			printf("Page is not allocated by kernel ");
+			printf("so it can not be freed by it\n");
 		}
 
 		return;
