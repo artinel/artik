@@ -129,22 +129,22 @@ int pm_free_page(void *address) {
 	uint64_t page = (uint64_t) address / PAGE_SIZE;
 
 	if (page >= pm_manager.total_pages) {
-		return 1;
+		return PM_FREE_PAGE_INVL;
 	}
 
 	if (pm_manager.bitmap[page].is_free) {
-		return 1;
+		return PM_FREE_PAGE_NALLOC;
 	}
 
 	if (pm_manager.bitmap[page].is_kernel_alloc == false) {
-		return 1;
+		return PM_FREE_PAGE_NKERNEL;
 	}
 
 	pm_manager.usable_pages++;
 	pm_manager.bitmap[page].is_free = true;
 	pm_manager.bitmap[page].is_kernel_alloc = false;
 
-	return 0;
+	return PM_FREE_PAGE_OK;
 }
 
 pm_manager_t *pm_get_manager(void) {

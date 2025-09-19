@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define PM_FREE_PAGE_OK		0x00
+#define PM_FREE_PAGE_INVL	0x01
+#define PM_FREE_PAGE_NALLOC	0x02
+#define PM_FREE_PAGE_NKERNEL	0x03
 
 struct pm_bitmap {
 	bool is_free;		/* is the page usable? (free)*/
