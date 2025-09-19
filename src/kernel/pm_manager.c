@@ -4,6 +4,7 @@
 #include <kernel/vm_manager.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <libk/flags.h>
 
 static pm_manager_t pm_manager;
 
@@ -60,8 +61,8 @@ void init_pm_manager(void) {
 
 	/* Initialize all pages as allocated */
 	for (uint64_t i = 0; i < pm_manager.total_pages; i++) {
-		pm_manager.bitmap[i].is_free = false;
-		pm_manager.bitmap[i].is_kernel_alloc = false;
+		/* Seta ll flags to 0(Not free) */
+		pm_manager.bitmap[i].flags = 0;
 	}
 
 	/* Mark all usable pages as free */
@@ -77,7 +78,7 @@ void init_pm_manager(void) {
 
 			/* Mark each page as free in bitmap */
 			for (uint64_t page = page_start; page < page_end; page++) {
-				pm_manager.bitmap[page].is_free = true;
+				SET_FLAG(pm_manager.bitmap[page].flags, PM_FLAG_FREE);
 				pm_manager.usable_pages++;
 			}
 		}
@@ -92,10 +93,10 @@ void *pm_alloc_page(void) {
 	for (uint64_t i = pm_manager.last_allocated_index; 
 			i < pm_manager.total_pages; i++) {
 	
-		if (pm_manager.bitmap[i].is_free) {
+		if (CHECK_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_FREE)) {
 			/* Mark page as allocated */
-			pm_manager.bitmap[i].is_free = false;
-			pm_manager.bitmap[i].is_kernel_alloc = true;
+			UNSET_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_FREE);
+			SET_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_KERNEL);
 			pm_manager.last_allocated_index = i + 1;
 			pm_manager.usable_pages--;
 			return (void *)(i * PAGE_SIZE);
@@ -111,10 +112,10 @@ void *pm_alloc_page(void) {
 
 	/* Search from the beginnig if needed*/
 	for (uint64_t i = 0; i < pm_manager.last_allocated_index; i++) {
-		if (pm_manager.bitmap[i].is_free) {
+		if (CHECK_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_FREE)) {
 			/* Mark page as allocated */
-			pm_manager.bitmap[i].is_free = false;
-			pm_manager.bitmap[i].is_kernel_alloc = true;
+			UNSET_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_FREE);
+			SET_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_KERNEL);
 			pm_manager.last_allocated_index = i + 1;
 			pm_manager.usable_pages--;
 			return (void *) (i * PAGE_SIZE);
@@ -132,17 +133,18 @@ uint8_t pm_free_page(void *address) {
 		return PM_FREE_PAGE_INVL;
 	}
 
-	if (pm_manager.bitmap[page].is_free) {
+	if (CHECK_FLAG(pm_manager.bitmap[page].flags, PM_FLAG_FREE)) {
 		return PM_FREE_PAGE_NALLOC;
 	}
 
-	if (pm_manager.bitmap[page].is_kernel_alloc == false) {
+	if (!CHECK_FLAG(pm_manager.bitmap[page].flags, PM_FLAG_KERNEL)) {
 		return PM_FREE_PAGE_NKERNEL;
 	}
 
 	pm_manager.usable_pages++;
-	pm_manager.bitmap[page].is_free = true;
-	pm_manager.bitmap[page].is_kernel_alloc = false;
+
+	SET_FLAG(pm_manager.bitmap[page].flags, PM_FLAG_FREE);
+	UNSET_FLAG(pm_manager.bitmap[page].flags, PM_FLAG_KERNEL);
 
 	return PM_FREE_PAGE_OK;
 }

@@ -9,9 +9,11 @@
 #define PM_FREE_PAGE_NALLOC	0x02
 #define PM_FREE_PAGE_NKERNEL	0x03
 
+#define PM_FLAG_FREE		0x01
+#define PM_FLAG_KERNEL		0x02
+
 struct pm_bitmap {
-	bool is_free;		/* is the page usable? (free)*/
-	bool is_kernel_alloc;	/* is kernel allocated the page or is it reserved*/
+	uint8_t flags;
 }__attribute__((packed));
 
 typedef struct pm_bitmap pm_bitmap_t;
