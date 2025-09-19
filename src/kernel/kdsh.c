@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <kernel/pm_manager.h>
 #include <kernel/paging.h>
+#include <libk/flags.h>
 
 enum color_type {
 	PAINT_BG,
@@ -121,11 +122,11 @@ static void process_cmd(const char *cmd) {
 		uint8_t res = pm_free_page((void *)address);
 		if (res == PM_FREE_PAGE_OK) {
 			printf("Freed page in address %ul\n", address);
-		} else if (res == PM_PAGE_FREE_INVL) {
+		} else if (res == PM_FREE_PAGE_INVL) {
 			printf("Invalid page(Bad Address)\n");
-		} else if (res == PM_PAGE_FREE_NALLOC) {
+		} else if (res == PM_FREE_PAGE_NALLOC) {
 			printf("Page is already free\n");
-		} else if (res == PM_PAGE_FREE_NKERNEL) {
+		} else if (res == PM_FREE_PAGE_NKERNEL) {
 			printf("Page is not allocated by kernel ");
 			printf("so it can not be freed by it\n");
 		}
@@ -452,7 +453,7 @@ static void kdsh_page_map(void) {
 
 		printf("PAGE %ul - ", i);
 		
-		if (pm_manager->bitmap[i].is_free) {
+		if (CHECK_FLAG(pm_manager->bitmap[i].flags, PM_FLAG_FREE)) {
 			printf("FREE");
 		} else {
 			printf("ALLOCATED");
