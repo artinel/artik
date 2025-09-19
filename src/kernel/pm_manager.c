@@ -31,7 +31,7 @@ void init_pm_manager(void) {
 	}
 
 	pm_manager.total_pages = total_mem / PAGE_SIZE;
-	pm_manager.bitmap_size = (pm_manager.total_pages + 7) / 8;
+	pm_manager.bitmap_size = pm_manager.total_pages * sizeof(pm_manager_t);
 
 	uint64_t bitmap_addr = 0;
 
@@ -56,11 +56,12 @@ void init_pm_manager(void) {
 	}
 
 	/* Set bitmap address */
-	pm_manager.bitmap = (uint8_t *) (bitmap_addr + HIGH_HALF_OFFSET);
+	pm_manager.bitmap = (pm_bitmap_t *) (bitmap_addr + HIGH_HALF_OFFSET);
 
 	/* Initialize all pages as allocated */
-	for (uint64_t i = 0; i < pm_manager.bitmap_size; i++) {
-		pm_manager.bitmap[i] = 0xFF;
+	for (uint64_t i = 0; i < pm_manager.total_pages; i++) {
+		pm_manager.bitmap[i].is_free = false;
+		pm_manager.bitmap[i].is_kernel_alloc = false;
 	}
 
 	/* Mark all usable pages as free */
@@ -76,7 +77,7 @@ void init_pm_manager(void) {
 
 			/* Mark each page as free in bitmap */
 			for (uint64_t page = page_start; page < page_end; page++) {
-				pm_manager.bitmap[page / 8] &= ~(1 << page % 8);
+				pm_manager.bitmap[page].is_free = true;
 				pm_manager.usable_pages++;
 			}
 		}
@@ -91,9 +92,10 @@ void *pm_alloc_page(void) {
 	for (uint64_t i = pm_manager.last_allocated_index; 
 			i < pm_manager.total_pages; i++) {
 	
-		if ((pm_manager.bitmap[i / 8] & (1 << (i % 8))) == 0) {
+		if (pm_manager.bitmap[i].is_free) {
 			/* Mark page as allocated */
-			pm_manager.bitmap[i / 8] |= (1 << (i % 8));
+			pm_manager.bitmap[i].is_free = false;
+			pm_manager.bitmap[i].is_kernel_alloc = true;
 			pm_manager.last_allocated_index = i + 1;
 			pm_manager.usable_pages--;
 			return (void *)(i * PAGE_SIZE);
@@ -109,9 +111,10 @@ void *pm_alloc_page(void) {
 
 	/* Search from the beginnig if needed*/
 	for (uint64_t i = 0; i < pm_manager.last_allocated_index; i++) {
-		if ((pm_manager.bitmap[i / 8] & (1 << (i % 8))) == 0) {
+		if (pm_manager.bitmap[i].is_free) {
 			/* Mark page as allocated */
-			pm_manager.bitmap[i / 8] |= (1 << (i % 8));
+			pm_manager.bitmap[i].is_free = false;
+			pm_manager.bitmap[i].is_kernel_alloc = true;
 			pm_manager.last_allocated_index = i + 1;
 			pm_manager.usable_pages--;
 			return (void *) (i * PAGE_SIZE);
@@ -125,13 +128,23 @@ void *pm_alloc_page(void) {
 int pm_free_page(void *address) {
 	uint64_t page = (uint64_t) address / PAGE_SIZE;
 
-	if (page < pm_manager.total_pages) {
-		pm_manager.usable_pages++;
-		pm_manager.bitmap[page / 8] &= ~(1 << (page % 8));
-		return 0;
+	if (page >= pm_manager.total_pages) {
+		return 1;
 	}
 
-	return 1;
+	if (pm_manager.bitmap[page].is_free) {
+		return 1;
+	}
+
+	if (pm_manager.bitmap[page].is_kernel_alloc == false) {
+		return 1;
+	}
+
+	pm_manager.usable_pages++;
+	pm_manager.bitmap[page].is_free = true;
+	pm_manager.bitmap[page].is_kernel_alloc = false;
+
+	return 0;
 }
 
 pm_manager_t *pm_get_manager(void) {

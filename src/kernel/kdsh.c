@@ -444,7 +444,7 @@ static void kdsh_page_map(void) {
 
 		printf("PAGE %ul - ", i);
 		
-		if ((pm_manager->bitmap[i / 8] & (1 << (i % 8))) == 0) {
+		if (pm_manager->bitmap[i].is_free) {
 			printf("FREE");
 		} else {
 			printf("ALLOCATED");
