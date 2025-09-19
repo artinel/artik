@@ -103,13 +103,6 @@ void *pm_alloc_page(void) {
 		}
 	}
 
-	/* If last allocated index is 0 then we have already searched all
-	 * the pages and we did not find a suitable place. */
-	if (pm_manager.last_allocated_index == 0) {
-		/* Out of memory */
-		return NULL;
-	}
-
 	/* Search from the beginnig if needed*/
 	for (uint64_t i = 0; i < pm_manager.last_allocated_index; i++) {
 		if (CHECK_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_FREE)) {
