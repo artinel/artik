@@ -32,7 +32,7 @@ void init_pm_manager(void) {
 	}
 
 	pm_manager.total_pages = total_mem / PAGE_SIZE;
-	pm_manager.bitmap_size = pm_manager.total_pages * sizeof(pm_manager_t);
+	pm_manager.bitmap_size = pm_manager.total_pages * sizeof(pm_bitmap_t);
 
 	uint64_t bitmap_addr = 0;
 
