@@ -11,3 +11,8 @@ void *vm_phys_to_virt(void *phys_addr) {
 	void *virt_addr = (void *) (phys_addr + hhdm_req.response->offset);
 	return virt_addr;
 }
+
+void *vm_virt_to_phys(void *virt_addr) {
+	void *phys_addr = (void *) (virt_addr - hhdm_req.response->offset);
+	return phys_addr;
+}

@@ -175,6 +175,16 @@ uint8_t heap_free(void *address) {
 		header->next_header = NULL;
 		header->prev_header = NULL;
 	}
+
+	for(uint8_t i = 1; i < pages_count; i++) {
+		heap_header_t *base = pages[i];
+
+		if(CHECK_FLAG(base->flags, HEAP_FREE) && base->next_header == NULL) {
+			uint8_t res = pm_free_page(vm_virt_to_phys(pages[i]));
+			pages[i] = NULL;
+			pages_count--;
+		}
+	}
 	
 	return HEAP_FREE_OK;
 }
