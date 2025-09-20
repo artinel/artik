@@ -2,6 +2,7 @@
 #include <kernel/pm_manager.h>
 #include <kernel/vm_manager.h>
 #include <kernel/paging.h>
+#include <libk/stdio.h>
 #include <libk/flags.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -15,7 +16,7 @@ static uint8_t header_size = 0;
 static uint8_t heap_alloc_page(uint8_t index);
 
 void init_heap(void) {
-	header_size = header_size;
+	header_size = sizeof(heap_header_t);
 
 	uint8_t res = heap_alloc_page(0);
 	
@@ -100,4 +101,29 @@ void *heap_alloc(uint16_t size) {
 	}
 
 	return NULL;
+}
+
+void heap_print_map(void) {
+	for (uint8_t i = 0; i < pages_count; i++) {
+		heap_header_t *header = pages[i];
+
+		while (header != NULL) {
+			printf("---------------------------------\n");
+			printf("PAGE INDEX : %ud\n", i);
+			printf("PAGE ADDRESS : 0x%ux\n", pages[i]);
+			printf("--- HEADERS ---\n");
+			printf("HEADER ADDRESS : 0x%ux\n", header);
+			printf("HEADER PREVIOUS ADDRESS : 0x%ux\n", header->prev_header);
+			printf("HEADER NEXT ADDRESS : 0x%ux\n", header->next_header);
+			printf("HEADER SIZE : %ud\n", header->size);
+			if (CHECK_FLAG(header->flags, HEAP_FREE)) {
+				printf("HEADER STATE : FREE\n");
+			} else {
+				printf("HEADER STATE : ALLOCATED\n");
+			}
+			printf("---------------------------------\n");
+			
+			header = header->next_header;
+		}
+	}
 }

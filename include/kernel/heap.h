@@ -20,5 +20,6 @@ typedef struct heap_header heap_header_t;
 
 void init_heap(void);
 void *heap_alloc(uint16_t size);
+void heap_print_map(void);
 
 #endif
