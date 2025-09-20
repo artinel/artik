@@ -86,8 +86,10 @@ void *heap_alloc(uint16_t size) {
 					SET_FLAG(h->flags, HEAP_FREE);
 					h->size = header->size - (size + header_size);
 					header->size = size;
+					
+					void *ptr = (void *)header + header_size;
 
-					return header + header_size;
+					return ptr;
 				}
 			}
 			header = header->next_header;
@@ -126,4 +128,53 @@ void heap_print_map(void) {
 			header = header->next_header;
 		}
 	}
+}
+
+uint8_t heap_free(void *address) {
+	if (address == NULL) {
+		return HEAP_FREE_INVL_ADDR;
+	}
+
+	heap_header_t *header = (heap_header_t *)(address - header_size);
+	
+	if (CHECK_FLAG(header->flags, HEAP_FREE)) {
+		return HEAP_FREE_NALOC;
+	}
+
+	UNSET_FLAG(header->flags, HEAP_FREE);
+
+	heap_header_t *next = (heap_header_t *)header->next_header;
+	if (next != NULL && CHECK_FLAG(next->flags, HEAP_FREE)) {
+		header->next_header = next->next_header;
+	
+		heap_header_t *next_tmp = header->next_header;
+
+		if (next_tmp != NULL) {
+			next_tmp->prev_header = header;
+		}
+		
+		header->size += next->size + header_size;
+
+		next->next_header = NULL;
+		next->prev_header = NULL;
+	}
+
+	heap_header_t *prev = (heap_header_t *) header->prev_header;
+	if (prev != NULL && CHECK_FLAG(prev->flags, HEAP_FREE)) {
+		prev->next_header = header->next_header;
+
+		heap_header_t *next_tmp = prev->next_header;
+
+		if (next_tmp != NULL) {
+			next_tmp->prev_header = prev;
+		}
+
+		prev->size += header->size + header_size;
+
+
+		header->next_header = NULL;
+		header->prev_header = NULL;
+	}
+	
+	return HEAP_FREE_OK;
 }
