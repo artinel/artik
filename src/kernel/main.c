@@ -13,6 +13,7 @@
 #include <kernel/kdsh.h>
 #include <kernel/memmap.h>
 #include <kernel/pm_manager.h>
+#include <kernel/heap.h>
 #include <io/ps2_keyboard.h>
 #include <limits.h>
 #include "logo.h"
@@ -69,6 +70,9 @@ void main(void) {
 	/* Initialize Physical memory manager */
 	init_pm_manager();
 
+	/* Initialize Heap */
+	init_heap();
+
 	/* Fetch the first framebuffer */
 	struct limine_framebuffer *framebuffer = fb_req.response->framebuffers[0];
 
@@ -119,6 +123,7 @@ logo_too_big:
 	console_set_foreground(0xFFFFFF);
 	printf("Memory Map Initialized\n");
 	printf("Physical Memory Manager Initialized\n");
+	printf("Kernel Heap Initialized\n");
 	puts("Framebuffer Initialized\n");
 	puts("Console Initialized\n");
 
