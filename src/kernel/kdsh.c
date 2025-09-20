@@ -9,6 +9,7 @@
 #include <kernel/pm_manager.h>
 #include <kernel/paging.h>
 #include <libk/flags.h>
+#include <kernel/heap.h>
 
 enum color_type {
 	PAINT_BG,
@@ -50,6 +51,9 @@ static void process_cmd(const char *cmd) {
 		printf("page_map   \tPrint page map\n");
 		printf("page_info  \tPrint paging information\n");
 		printf("free_page  \tFree a page using pm_free_page\n");
+		printf("heap_map   \tPrint heap map\n");
+		printf("heap_alloc \tAllocate memory using heap\n");
+		printf("heap_free  \tFree memory from heap\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -130,6 +134,36 @@ static void process_cmd(const char *cmd) {
 			printf("Page is not allocated by kernel ");
 			printf("so it can not be freed by it\n");
 		}
+
+		return;
+	}
+
+	if (strcmp(cmd, "heap_map") == 0) {
+		heap_print_map();
+		return;
+	}
+
+
+	if (strcmp(cmd, "heap_alloc") == 0) {
+		printf("Enter the amount of memory(Bytes) : ");
+		char buffer[5];
+		gets(buffer, sizeof(buffer));
+		printf("\n");
+		uint64_t size = uatoi(buffer);
+		void *address = heap_alloc(size);
+
+		printf("ADDRESS : 0x%ux\n", address);
+
+		return;
+	}
+
+	if (strcmp(cmd, "heap_free") == 0) {
+		printf("Enter address (Decimal) : ");
+		char buffer[25];
+		gets(buffer, sizeof(buffer));
+		printf("\n");
+		uint64_t address = uatoi(buffer);
+		heap_free((void *)address);
 
 		return;
 	}
