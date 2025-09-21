@@ -179,6 +179,21 @@ uint8_t pm_free_page(void *address) {
 	return PM_FREE_PAGE_OK;
 }
 
+uint8_t pm_free_multi_page(void *address, uint32_t count) {
+	
+	void *addr = address;
+	
+	for (uint32_t i = 0; i < count; i++) {
+		uint8_t res  = pm_free_page(addr);
+		if (res != PM_FREE_PAGE_OK) {
+			return res;
+		}
+		addr += PAGE_SIZE;
+	}
+
+	return PM_FREE_PAGE_OK;
+}
+
 pm_manager_t *pm_get_manager(void) {
 	return &pm_manager;
 }
