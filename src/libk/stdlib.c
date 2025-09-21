@@ -3,6 +3,7 @@
 #include <libk/ctype.h>
 #include <kernel/pit.h>
 #include <stdbool.h>
+#include <kernel/heap.h>
 
 static bool is_sleep = false;
 
@@ -129,4 +130,12 @@ void sleep(uint16_t sec) {
 	pit_remove_callback();
 	/* Restore the previous pit count */
 	pit_set_count(count_tmp);
+}
+
+void *kmalloc(uint32_t size) {
+	return heap_alloc(size);
+}
+
+uint8_t kfree(void *address) {
+	return heap_free(address);
 }
