@@ -18,7 +18,7 @@
 struct heap_header {
 	void *prev_header;
 	uint8_t flags;
-	uint16_t size;
+	uint32_t size;
 	void *next_header;
 }__attribute__((packed));
 
