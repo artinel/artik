@@ -148,7 +148,7 @@ static void process_cmd(const char *cmd) {
 
 	if (strcmp(cmd, "heap_alloc") == 0) {
 		printf("Enter the amount of memory(Bytes) : ");
-		char buffer[5];
+		char buffer[10];
 		gets(buffer, sizeof(buffer));
 		printf("\n");
 		uint64_t size = uatoi(buffer);
