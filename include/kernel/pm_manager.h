@@ -32,5 +32,6 @@ void init_pm_manager(void);
 void *pm_alloc_page(void);
 uint8_t pm_free_page(void *address);
 pm_manager_t *pm_get_manager(void);
+void *pm_alloc_multi_page(uint32_t count);
 
 #endif
