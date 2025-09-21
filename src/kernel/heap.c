@@ -9,16 +9,20 @@
 
 #define TOTAL_PAGES	32
 
-static void *pages[TOTAL_PAGES];
+static heap_page_t *pages;
 static uint8_t pages_count = 0;
 static uint8_t header_size = 0;
 
-static uint8_t heap_alloc_page(uint8_t index);
+static uint8_t heap_alloc_page(void);
 
 void init_heap(void) {
 	header_size = sizeof(heap_header_t);
 
-	uint8_t res = heap_alloc_page(0);
+	/* Allocate a page for storing the list of pages  */
+	pages = vm_phys_to_virt(pm_alloc_page());
+
+	/* Allocate the initial page */
+	uint8_t res = heap_alloc_page();
 	
 	if (res != HEAP_ALLOC_OK) {
 		/* [TODO] panic the kernel*/
@@ -26,23 +30,25 @@ void init_heap(void) {
 	}
 }
 
-static uint8_t heap_alloc_page(uint8_t index) {
-	if (index >= TOTAL_PAGES) {
-		return HEAP_ALLOC_INVL_INDEX;
-	}
-
-	if (pages[index] != 0) {
-		return HEAP_ALLOC_INVL_INDEX;
-	}
-
+static uint8_t heap_alloc_page(void) {
 	void *page = pm_alloc_page();
 
 	if (page == NULL) {
 		return HEAP_ALLOC_FAIL;
 	}
 
+	uint32_t index = pages_count;
+	for (uint32_t i = 0; i < pages_count; i++) {
+		if (CHECK_FLAG(pages[i].flags, HEAP_PAGE_DALLOC)) {
+			index = i;
+			break;
+		}
+	}
+
 	page = vm_phys_to_virt(page);
-	pages[index] = page;
+	pages[index].addr = page;
+	pages[index].count = 1;
+	pages[index].flags = 0;
 	pages_count++;
 
 	heap_header_t *base_header = (heap_header_t *) page;
@@ -61,9 +67,9 @@ void *heap_alloc(uint16_t size) {
 	
 	heap_header_t *header = NULL;
 	for (uint8_t i = 0; i < pages_count; i++) {
-		header = pages[i];
+		header = pages[i].addr;
 
-		while (header != NULL) {
+		while (header != NULL && !CHECK_FLAG(pages[i].flags, HEAP_PAGE_DALLOC)) {
 			if (CHECK_FLAG(header->flags, HEAP_FREE)) {
 				if (header->size == size) {
 					UNSET_FLAG(header->flags, HEAP_FREE);
@@ -96,7 +102,7 @@ void *heap_alloc(uint16_t size) {
 		}
 
 		if ((i + 1) == pages_count) {
-			if (heap_alloc_page(i + 1) != HEAP_ALLOC_OK) {
+			if (heap_alloc_page() != HEAP_ALLOC_OK) {
 				return NULL;
 			}
 		}
@@ -107,12 +113,12 @@ void *heap_alloc(uint16_t size) {
 
 void heap_print_map(void) {
 	for (uint8_t i = 0; i < pages_count; i++) {
-		heap_header_t *header = pages[i];
+		heap_header_t *header = pages[i].addr;
 
 		while (header != NULL) {
 			printf("---------------------------------\n");
 			printf("PAGE INDEX : %ud\n", i);
-			printf("PAGE ADDRESS : 0x%ux\n", pages[i]);
+			printf("PAGE ADDRESS : 0x%ux\n", pages[i].addr);
 			printf("--- HEADERS ---\n");
 			printf("HEADER ADDRESS : 0x%ux\n", header);
 			printf("HEADER PREVIOUS ADDRESS : 0x%ux\n", header->prev_header);
@@ -177,12 +183,24 @@ uint8_t heap_free(void *address) {
 	}
 
 	for(uint8_t i = 1; i < pages_count; i++) {
-		heap_header_t *base = pages[i];
+		if (CHECK_FLAG(pages[i].flags, HEAP_PAGE_DALLOC)) {
+			continue;
+		}
+
+		heap_header_t *base = pages[i].addr;
 
 		if(CHECK_FLAG(base->flags, HEAP_FREE) && base->next_header == NULL) {
-			uint8_t res = pm_free_page(vm_virt_to_phys(pages[i]));
-			pages[i] = NULL;
-			pages_count--;
+			uint8_t res = pm_free_page(vm_virt_to_phys(pages[i].addr));
+
+			if (res != PM_FREE_PAGE_OK) {
+				return HEAP_FREE_NALOC;
+			}
+
+			SET_FLAG(pages[i].flags, HEAP_PAGE_DALLOC);
+			pages[i].addr = NULL;
+
+			return 0;
+			pages[i].count = 0;
 		}
 	}
 	
