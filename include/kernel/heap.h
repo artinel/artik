@@ -6,7 +6,7 @@
 #define HEAP_FREE		0x01
 
 #define HEAP_ALLOC_OK		0x00
-#define HEAP_ALLOC_INVL_INDEX	0x01
+#define HEAP_ALLOC_INVL_COUNT	0x01
 #define HEAP_ALLOC_FAIL		0x02
 
 #define HEAP_FREE_OK		0x00

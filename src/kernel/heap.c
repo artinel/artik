@@ -13,7 +13,7 @@ static heap_page_t *pages;
 static uint8_t pages_count = 0;
 static uint8_t header_size = 0;
 
-static uint8_t heap_alloc_page(void);
+static uint8_t heap_alloc_page(uint32_t count);
 
 void init_heap(void) {
 	header_size = sizeof(heap_header_t);
@@ -22,7 +22,7 @@ void init_heap(void) {
 	pages = vm_phys_to_virt(pm_alloc_page());
 
 	/* Allocate the initial page */
-	uint8_t res = heap_alloc_page();
+	uint8_t res = heap_alloc_page(1);
 	
 	if (res != HEAP_ALLOC_OK) {
 		/* [TODO] panic the kernel*/
@@ -30,8 +30,16 @@ void init_heap(void) {
 	}
 }
 
-static uint8_t heap_alloc_page(void) {
-	void *page = pm_alloc_page();
+static uint8_t heap_alloc_page(uint32_t count) {
+	void *page = NULL;
+
+	if (count == 1) {
+		page = pm_alloc_page();
+	} else if (count > 1) {
+		page = pm_alloc_multi_page(count);
+	} else {
+		return HEAP_ALLOC_INVL_COUNT;
+	}
 
 	if (page == NULL) {
 		return HEAP_ALLOC_FAIL;
@@ -47,7 +55,7 @@ static uint8_t heap_alloc_page(void) {
 
 	page = vm_phys_to_virt(page);
 	pages[index].addr = page;
-	pages[index].count = 1;
+	pages[index].count = count;
 	pages[index].flags = 0;
 	pages_count++;
 
@@ -55,14 +63,18 @@ static uint8_t heap_alloc_page(void) {
 	base_header->prev_header = NULL;
 	base_header->next_header = NULL;
 	SET_FLAG(base_header->flags, HEAP_FREE);
-	base_header->size = PAGE_SIZE - header_size;
+	base_header->size = (PAGE_SIZE * count) - header_size;
 	
 	return HEAP_ALLOC_OK;
 }
 
 void *heap_alloc(uint32_t size) {
 	if (size > (uint32_t)PAGE_SIZE - header_size) {
-		return NULL;
+		uint32_t count = (size + header_size) / PAGE_SIZE;
+		count++;
+		if (heap_alloc_page(count) != HEAP_ALLOC_OK) {
+			return NULL;
+		}
 	}
 	
 	heap_header_t *header = NULL;
@@ -102,7 +114,7 @@ void *heap_alloc(uint32_t size) {
 		}
 
 		if ((i + 1) == pages_count) {
-			if (heap_alloc_page() != HEAP_ALLOC_OK) {
+			if (heap_alloc_page(1) != HEAP_ALLOC_OK) {
 				return NULL;
 			}
 		}
