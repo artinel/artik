@@ -159,7 +159,7 @@ uint8_t heap_free(void *address) {
 		return HEAP_FREE_NALOC;
 	}
 
-	UNSET_FLAG(header->flags, HEAP_FREE);
+	SET_FLAG(header->flags, HEAP_FREE);
 
 	heap_header_t *next = (heap_header_t *)header->next_header;
 	if (next != NULL && CHECK_FLAG(next->flags, HEAP_FREE)) {
@@ -202,7 +202,13 @@ uint8_t heap_free(void *address) {
 		heap_header_t *base = pages[i].addr;
 
 		if(CHECK_FLAG(base->flags, HEAP_FREE) && base->next_header == NULL) {
-			uint8_t res = pm_free_page(vm_virt_to_phys(pages[i].addr));
+			uint8_t res = 0;
+			if (pages[i].count == 1) {
+				res = pm_free_page(vm_virt_to_phys(pages[i].addr));
+			} else {
+				res = pm_free_multi_page(vm_virt_to_phys(pages[i].addr),
+						pages[i].count);
+			}
 
 			if (res != PM_FREE_PAGE_OK) {
 				return HEAP_FREE_NALOC;
@@ -210,8 +216,6 @@ uint8_t heap_free(void *address) {
 
 			SET_FLAG(pages[i].flags, HEAP_PAGE_DALLOC);
 			pages[i].addr = NULL;
-
-			return 0;
 			pages[i].count = 0;
 		}
 	}
