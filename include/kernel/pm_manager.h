@@ -9,8 +9,8 @@
 #define PM_FREE_PAGE_NALLOC	0x02
 #define PM_FREE_PAGE_NKERNEL	0x03
 
-#define PM_FLAG_FREE		0x01
-#define PM_FLAG_KERNEL		0x02
+#define PM_FLAG_FREE		1
+#define PM_FLAG_KERNEL		2
 
 struct pm_bitmap {
 	uint8_t flags;

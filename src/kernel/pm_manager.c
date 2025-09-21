@@ -119,15 +119,16 @@ void *pm_alloc_page(void) {
 	return NULL;
 }
 
-void *pm_alloc_multi_page(uint32_t count) {
-	if (count > pm_manager.usable_pages) {
-		return NULL;
-	}
+static void *pm_alloc_multi_search(uint64_t start_index, uint64_t end_index, 
+		uint32_t count) {
+
 	bool is_enough = false;
-	for (uint64_t i = 0; i < pm_manager.total_pages; i++) {
+	for (uint64_t i = start_index; i < end_index; i++) {
+
 		if (CHECK_FLAG(pm_manager.bitmap[i].flags, PM_FLAG_FREE)) {
 			for (uint32_t j = 0; j < count - 1; j++) {
-				if(!CHECK_FLAG(pm_manager.bitmap[i + j + 1].flags, 
+				uint64_t index = i + j + 1;
+				if(!CHECK_FLAG(pm_manager.bitmap[index].flags, 
 							PM_FLAG_FREE)) {
 					is_enough = false;		
 					break;
@@ -139,7 +140,7 @@ void *pm_alloc_multi_page(uint32_t count) {
 					uint64_t index = i + k;
 					UNSET_FLAG(pm_manager.bitmap[index].flags,
 							PM_FLAG_FREE);
-
+			
 					SET_FLAG(pm_manager.bitmap[index].flags,
 							PM_FLAG_KERNEL);
 
@@ -154,6 +155,23 @@ void *pm_alloc_multi_page(uint32_t count) {
 	}
 
 	return NULL;
+
+}
+
+void *pm_alloc_multi_page(uint32_t count) {
+	if (count > pm_manager.usable_pages) {
+		return NULL;
+	}
+
+	void *res = pm_alloc_multi_search(pm_manager.last_allocated_index, 
+			pm_manager.total_pages, count);
+
+	if (res == NULL) {
+		res = pm_alloc_multi_search(0, pm_manager.last_allocated_index, count);
+	}
+
+	return res;
+
 }
 
 uint8_t pm_free_page(void *address) {
