@@ -38,22 +38,24 @@ void init_kdsh(void) {
 
 static void process_cmd(const char *cmd) {
 	if (strcmp(cmd, "help") == 0) {
-		printf("version    \tPrint kernel version\n");
-		printf("paint_bg   \tPaint console background\n");
-		printf("set_bg     \tSet console character background color\n");
-		printf("set_fg     \tSet console character foreground color\n");
-		printf("clear      \tClear the screen\n");
-		printf("int        \tInterrupt the kernel\n");
-		printf("sleep      \tSleep for n seconds\n");
-		printf("memmap     \tPrint memory map\n");
-		printf("meminfo    \tPrint memory information\n");
-		printf("alloc_page \tAllocate a page using pm_alloc_page\n");
-		printf("page_map   \tPrint page map\n");
-		printf("page_info  \tPrint paging information\n");
-		printf("free_page  \tFree a page using pm_free_page\n");
-		printf("heap_map   \tPrint heap map\n");
-		printf("heap_alloc \tAllocate memory using heap\n");
-		printf("heap_free  \tFree memory from heap\n");
+		printf("version     \tPrint kernel version\n");
+		printf("paint_bg    \tPaint console background\n");
+		printf("set_bg      \tSet console character background color\n");
+		printf("set_fg      \tSet console character foreground color\n");
+		printf("clear       \tClear the screen\n");
+		printf("int         \tInterrupt the kernel\n");
+		printf("sleep       \tSleep for n seconds\n");
+		printf("memmap      \tPrint memory map\n");
+		printf("meminfo     \tPrint memory information\n");
+		printf("alloc_page  \tAllocate a page using pm_alloc_page\n");
+		printf("alloc_npage \tAllocate n number of pages\n");
+		printf("page_map    \tPrint page map\n");
+		printf("page_info   \tPrint paging information\n");
+		printf("free_page   \tFree a page using pm_free_page\n");
+		printf("free_npage  \tFree n number of pages\n");
+		printf("heap_map    \tPrint heap map\n");
+		printf("heap_alloc  \tAllocate memory using heap\n");
+		printf("heap_free   \tFree memory from heap\n");
 		return;
 	}
 	if (strcmp(cmd, "version") == 0) {
@@ -167,6 +169,41 @@ static void process_cmd(const char *cmd) {
 
 		return;
 	}
+
+	if (strcmp(cmd, "alloc_npage") == 0) {
+		printf("Enter the number of pages : ");
+		char buffer[5];
+		gets(buffer, sizeof(buffer));
+		printf("\n");
+		uint64_t size = uatoi(buffer);
+		void *address = pm_alloc_multi_page(size);
+
+		printf("ADDRESS : 0x%ux\n", address);
+
+		return;
+	}
+
+	if (strcmp(cmd, "free_npage") == 0) {
+		printf("Enter the address (Decimal) : ");
+		char buffer[20];
+		gets(buffer, sizeof(buffer));
+		printf("\n");
+		uint64_t addr = uatoi(buffer);
+		
+		printf("Enter the number of pages : ");
+		gets(buffer, sizeof(buffer));
+		printf("\n");
+		uint64_t count = uatoi(buffer);
+
+		uint8_t res = pm_free_multi_page((void *)addr, count);
+
+		if (res != PM_FREE_PAGE_OK) {
+			printf("FAILED\n");
+		}
+
+		return;
+	}
+
 
 	printf("Command not found!!!\n");
 }
