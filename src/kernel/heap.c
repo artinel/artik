@@ -60,8 +60,8 @@ static uint8_t heap_alloc_page(void) {
 	return HEAP_ALLOC_OK;
 }
 
-void *heap_alloc(uint16_t size) {
-	if (size > PAGE_SIZE - header_size) {
+void *heap_alloc(uint32_t size) {
+	if (size > (uint32_t)PAGE_SIZE - header_size) {
 		return NULL;
 	}
 	
