@@ -1,11 +1,11 @@
 #include <libk/stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <io/scancodes.h>
-#include <io/ps2_keyboard.h>
-#include <io/ports.h>
-#include <kernel/irq.h>
-#include <io/iox.h>
+#include <scancodes.h>
+#include <driver/ps2_keyboard.h>
+#include <ports.h>
+#include <core/int/irq.h>
+#include <utils/iox.h>
 
 #define ESC	0x1B
 #define BS	0x08

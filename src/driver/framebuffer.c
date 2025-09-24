@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
-#include <io/framebuffer.h>
+#include <driver/framebuffer.h>
 
 /* [TODO] Implement double buffering (for cursor and reading the buffer) */
 

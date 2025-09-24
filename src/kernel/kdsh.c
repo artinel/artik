@@ -1,15 +1,15 @@
 #include <kernel/kdsh.h>
 #include <libk/stdio.h>
-#include <io/console.h>
+#include <driver/console.h>
 #include <libk/string.h>
 #include <kernel/version.h>
 #include <libk/stdlib.h>
-#include <kernel/memmap.h>
+#include <core/mem/memmap.h>
 #include <stdlib.h>
-#include <kernel/pm_manager.h>
-#include <kernel/paging.h>
+#include <core/mem/pm_manager.h>
+#include <core/mem/paging.h>
 #include <libk/flags.h>
-#include <kernel/heap.h>
+#include <core/mem/heap.h>
 
 enum color_type {
 	PAINT_BG,

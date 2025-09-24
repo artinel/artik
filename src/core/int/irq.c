@@ -1,9 +1,9 @@
-#include <kernel/irq.h>
-#include <kernel/isr.h>
-#include <kernel/idt.h>
-#include <kernel/pic.h>
-#include <io/ports.h>
-#include <io/iox.h>
+#include <core/int/irq.h>
+#include <core/int/isr.h>
+#include <core/int/idt.h>
+#include <core/pic.h>
+#include <ports.h>
+#include <utils/iox.h>
 #include <stdlib.h>
 #include <stdint.h>
 

@@ -1,9 +1,9 @@
 #include <libk/stdlib.h>
 #include <stdint.h>
 #include <libk/ctype.h>
-#include <kernel/pit.h>
+#include <core/pit.h>
 #include <stdbool.h>
-#include <kernel/heap.h>
+#include <core/mem/heap.h>
 
 static bool is_sleep = false;
 

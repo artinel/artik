@@ -1,7 +1,7 @@
-#include <kernel/heap.h>
-#include <kernel/pm_manager.h>
-#include <kernel/vm_manager.h>
-#include <kernel/paging.h>
+#include <core/mem/heap.h>
+#include <core/mem/pm_manager.h>
+#include <core/mem/vm_manager.h>
+#include <core/mem/paging.h>
 #include <libk/stdio.h>
 #include <libk/flags.h>
 #include <stdint.h>

@@ -1,4 +1,4 @@
-#include <kernel/memmap.h>
+#include <core/mem/memmap.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <limine.h>

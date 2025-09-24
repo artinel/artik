@@ -1,7 +1,7 @@
-#include <kernel/isr.h>
-#include <kernel/idt.h>
+#include <core/int/isr.h>
+#include <core/int/idt.h>
 #include <libk/stdio.h>
-#include <io/console.h>
+#include <driver/console.h>
 #include <stdint.h>
 
 extern void isr0(void);

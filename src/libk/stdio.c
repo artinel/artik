@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <libk/stdio.h>
-#include <io/console.h>
-#include <io/ps2_keyboard.h>
+#include <driver/console.h>
+#include <driver/ps2_keyboard.h>
 #include <libk/ctype.h>
 #include <libk/ascii.h>
 #include <stdarg.h>

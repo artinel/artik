@@ -1,9 +1,9 @@
-#include <kernel/pit.h>
+#include <core/pit.h>
 #include <stdint.h>
-#include <io/iox.h>
-#include <io/ports.h>
-#include <kernel/isr.h>
-#include <kernel/irq.h>
+#include <utils/iox.h>
+#include <ports.h>
+#include <core/int/isr.h>
+#include <core/int/irq.h>
 #include <libk/stdio.h>
 #include <stdbool.h>
 

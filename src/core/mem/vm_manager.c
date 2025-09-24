@@ -1,4 +1,4 @@
-#include <kernel/vm_manager.h>
+#include <core/mem/vm_manager.h>
 #include <limine.h>
 
 __attribute__((used, section(".limine_requests")))

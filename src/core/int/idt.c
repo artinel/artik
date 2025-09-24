@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include <kernel/idt.h>
+#include <core/int/idt.h>
 #include <libk/string.h>
-#include <kernel/isr.h>
+#include <core/int/isr.h>
 
 #define IDTS_LENGTH	256
 

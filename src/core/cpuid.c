@@ -1,4 +1,4 @@
-#include <kernel/cpuid.h>
+#include <core/cpuid.h>
 #include <stdint.h>
 #include <libk/stdio.h>
 

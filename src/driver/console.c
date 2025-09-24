@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
-#include <io/console.h>
-#include <io/framebuffer.h>
+#include <driver/console.h>
+#include <driver/framebuffer.h>
 #include <font/psf.h>
 #include <font/default.psf.h>
 #include <libk/string.h>

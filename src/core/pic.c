@@ -1,6 +1,6 @@
-#include <kernel/pic.h>
-#include <io/ports.h>
-#include <io/iox.h>
+#include <core/pic.h>
+#include <ports.h>
+#include <utils/iox.h>
 
 void pic_remap(uint8_t master_offset, uint8_t slave_offset) {
 	 /* Start initialization sequence (in cascade mode) */	
